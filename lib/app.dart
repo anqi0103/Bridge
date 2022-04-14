@@ -12,8 +12,11 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(
-        body: Center(child: Text('Bridge')),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Bridge'),
+          ),
+        body: const Center(child: Text('Bridge')),
       )
     );
   }
