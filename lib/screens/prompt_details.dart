@@ -16,6 +16,13 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
       appBar: AppBar(
         leading: const BackButton(),
         title: const Text('Bridge'),
+        actions: [Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            // onTap: (() => Navigator.push(context, MaterialPageRoute(builder: ProfileScreen()))),
+            child: const Icon(Icons.account_circle_rounded),
+          ),
+        )],
       ),
       body: ListView.builder(
         itemCount: widget.comments.length,
