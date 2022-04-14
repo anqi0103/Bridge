@@ -24,19 +24,37 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
           ),
         )],
       ),
-      body: ListView.builder(
-        itemCount: widget.comments.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(color: Colors.black, width: .5), 
-                borderRadius: BorderRadius.circular(5)),
-              title: Text(widget.comments[index]),
+      body: Column(
+        children: [
+          // Doing it this way fixes the prompt header so it can always be seen.
+          // Alternately we could have it unfixed, and it would disappear as we
+          // scroll...
+          Container(
+            height: 100,
+            color: Colors.greenAccent,
+            child: const Center(child: Text(
+              'The prompt goes here.', 
+              style: TextStyle(fontWeight: FontWeight.w700)
+            )),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: widget.comments.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.black, width: .5), 
+                      borderRadius: BorderRadius.circular(5)),
+                    title: Text(widget.comments[index]),
+                    subtitle: const Text('Here\'s a comment that says some stuff.'),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
