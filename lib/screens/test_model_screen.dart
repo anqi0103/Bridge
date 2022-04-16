@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 import '../models/attributes.dart';
 
@@ -13,7 +14,7 @@ class TestModelScreen extends StatefulWidget {
 class _TestModelScreenState extends State<TestModelScreen> {
   @override
   Widget build(BuildContext context) {
-    CollectionReference attributes = FirebaseFirestore.instance.collection('attributes');
+    var attributes = Attributes.getAttributeCollection();
 
     return Scaffold(
       appBar: AppBar(
@@ -51,8 +52,11 @@ class _TestModelScreenState extends State<TestModelScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-        Attributes attribute = Attributes(attributeName: "testAttrAdded", username: "testUserAdded");
-        attribute.addAttribute();
+        var random = Random();
+        var randomNum = random.nextInt(100);
+        var randomNum2 = random.nextInt(100);
+        Attributes attributeHardCodedExample = Attributes(attributeName: "testAttrAdded"+ randomNum.toString(), username: "testUserAdded" + randomNum2.toString());
+        attributeHardCodedExample.addAttribute();
       },
       
       child: const Text('Add'),

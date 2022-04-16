@@ -14,9 +14,13 @@ class Attributes {
   }
 
   void addAttribute() {
-    FirebaseFirestore.instance.collection('attributes').add({
+    getAttributeCollection().add({
       'attributeName' : attributeName,
       'username' : username,
     });
+  }
+
+  static CollectionReference getAttributeCollection() {
+    return FirebaseFirestore.instance.collection('attributes');
   }
 }
