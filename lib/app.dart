@@ -1,3 +1,4 @@
+import 'package:bridge/screens/prompt_details.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -12,8 +13,26 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(
-        body: Center(child: Text('Bridge')),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Bridge'),
+          ),
+        // The below button and navigation is just so I could 
+        // navigate to the Prompt Detail Screen and see it
+        // in the simulator.
+
+        // It can/will be replaced obviously with the Home Screen!!
+        body: Builder(
+          builder: (context) => Center(
+            child: ElevatedButton(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PromptDetailScreen(comments: List<String>.generate(100, (i) => 'Item $i')))
+              ), 
+              child: const Text('Go To Prompt Detail'),
+            )
+          ),
+        )
       )
     );
   }
