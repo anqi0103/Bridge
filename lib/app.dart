@@ -1,5 +1,4 @@
-import 'package:bridge/screens/model_test_screen.dart';
-import 'package:bridge/screens/profile_screen.dart';
+import 'package:bridge/screens/test_model_screen.dart';
 import 'package:bridge/screens/prompt_details.dart';
 import 'package:flutter/material.dart';
 

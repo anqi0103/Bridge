@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/attributes.dart';
+
 class TestModelScreen extends StatefulWidget {
   const TestModelScreen({Key? key}) : super(key: key);
 
@@ -34,9 +36,9 @@ class _TestModelScreenState extends State<TestModelScreen> {
               return const Text('Getting information');
             }
             return ListView(
-              children: 
+              children:
               snapshot.data!.docs.map((key) {
-                return Center(
+                return Card(
                   child: ListTile(
                     title: Text('Attribute Model ID: ' + key.id),
                     subtitle: Text(key['attributeName'] + '|' + key['username']),
@@ -46,6 +48,14 @@ class _TestModelScreenState extends State<TestModelScreen> {
             );
           }
         )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+        Attributes attribute = Attributes(attributeName: "testAttrAdded", username: "testUserAdded");
+        attribute.addAttribute();
+      },
+      
+      child: const Text('Add'),
       )
     );
   }
