@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import './prompt_details.dart';
+import './test_model_screen.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 15.0),
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Center(
+                  child: Text("Today's Prompts", style: Theme.of(context).textTheme.headline6),
+                ),
+              ),
+            ),
+            // Need to rewrite here using ListView and map the prompts
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(color: Colors.black, width: .5), 
+                  borderRadius: BorderRadius.circular(5)),
+                subtitle: const Text('Here\'s a comment that says some stuff.'),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PromptDetailScreen(comments: List<String>.generate(100, (i) => 'Item $i'))
+                  )
+                ),
+              )
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                margin: const EdgeInsets.only(left: 10.0),
+                child: const Text("7 replies"),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => const TestModelScreen())
+                ), 
+              child: const Text('View Models')
+            ),
+          ],)
+        ),
+      )
+    );
+  }
+}
