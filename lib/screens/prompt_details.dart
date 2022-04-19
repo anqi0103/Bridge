@@ -1,3 +1,5 @@
+import 'package:bridge/models/comments.dart';
+import 'package:bridge/widgets/comment.dart';
 import 'package:flutter/material.dart';
 
 class PromptDetailScreen extends StatefulWidget {
@@ -41,16 +43,16 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
             child: ListView.builder(
               itemCount: widget.comments.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.black, width: .5), 
-                      borderRadius: BorderRadius.circular(5)),
-                    title: Text(widget.comments[index]),
-                    subtitle: const Text('Here\'s a comment that says some stuff.'),
-                  ),
+                return CommentLayout(comment: Comments(
+                  comment: 'Space, the final frontier. These are the voyages '
+                  'of the starship Enterprise. It\'s continuing mission, to'
+                  'explore strange new worlds. To seek out new life, and new...',
+                  rating: 50,
+                  username: 'anon_$index',
+                  promptID: 'abc_$index'
+                  )  
                 );
+                // return Comment(comment: CommentsList[index]);
               },
             ),
           ),
