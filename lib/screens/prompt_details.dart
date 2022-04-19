@@ -1,11 +1,13 @@
 import 'package:bridge/models/comments.dart';
+import 'package:bridge/models/prompts.dart';
 import 'package:bridge/widgets/comment_layout.dart';
 import 'package:flutter/material.dart';
 
 class PromptDetailScreen extends StatefulWidget {
   final List comments;
+  final Prompts prompt;
 
-  const PromptDetailScreen({ Key? key, required this.comments }) : super(key: key);
+  const PromptDetailScreen({ Key? key, required this.comments, required this.prompt }) : super(key: key);
 
   @override
   State<PromptDetailScreen> createState() => _PromptDetailScreenState();
@@ -34,25 +36,33 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
           Container(
             height: 100,
             color: Colors.greenAccent,
-            child: const Center(child: Text(
-              'The prompt goes here.', 
-              style: TextStyle(fontWeight: FontWeight.w700)
-            )),
+            child: Center(child: 
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.prompt.prompt, 
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6
+                )
+              )
+            ),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: widget.comments.length,
               itemBuilder: (context, index) {
-                return CommentLayout(comment: Comments(
-                  comment: 'Space, the final frontier. These are the voyages '
-                  'of the starship Enterprise. It\'s continuing mission, to'
-                  'explore strange new worlds. To seek out new life, and new...',
-                  rating: 50,
-                  username: 'anon_$index',
-                  promptID: 'abc_$index'
+                return CommentLayout(
+                  comment: Comments(
+                    // Hard-coded this as well, temporarily. 
+                    comment:  'Space, the final frontier. These are the voyages '
+                              'of the starship Enterprise. It\'s continuing mission'
+                              ', to explore strange new worlds. To seek out new...',
+                    rating: 50,
+                    username: 'anon_$index',
+                    promptID: 'abc_$index'
                   )  
                 );
-                // return Comment(comment: CommentsList[index]);
+                // return CommentLayout(comment: CommentsList[index]);
               },
             ),
           ),
