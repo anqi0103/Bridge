@@ -6,6 +6,7 @@ import 'app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(
+    name: 'bridge',
     options: const FirebaseOptions(
         apiKey: "AIzaSyAMzhZvT55vHqVkCJ8wOz80M23fwKbaE-I",
         authDomain: "bridge-7759a.firebaseapp.com",

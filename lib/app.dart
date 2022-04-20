@@ -1,5 +1,5 @@
+import 'package:bridge/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import './screens/home_screen_prompts.dart';
 
 class App extends StatelessWidget {
   final String title;
@@ -13,12 +13,8 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Bridge'),
-          ),
-          body: 
-            const HomeScreen(),
+      home: const Scaffold(
+          body: LoginScreen(),
       )
     );
   }
