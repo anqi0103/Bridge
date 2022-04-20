@@ -44,6 +44,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.bridge"
+        resConfig = "en"
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -65,6 +66,9 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.1'
+    implementation 'com.facebook.android:facebook-login:8.1.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
