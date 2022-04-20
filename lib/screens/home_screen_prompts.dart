@@ -1,3 +1,4 @@
+import 'package:bridge/models/prompts.dart';
 import 'package:flutter/material.dart';
 import './prompt_details.dart';
 import './test_model_screen.dart';
@@ -31,7 +32,17 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PromptDetailScreen(comments: List<String>.generate(100, (i) => 'Item $i'))
+                    builder: (context) => PromptDetailScreen(
+                      comments: List<String>.generate(100, (i) => 'Item $i',),
+                      prompt: Prompts(
+                        // Hard-coded this with random mock data for now.
+                        // We'll get it connected to Firebase at some point.
+                        prompt:   'What do you think the world '
+                                  'will look like in 300 years?',
+                        numberComments: 100,
+                        numberTimesDisplayed: 3
+                      ),
+                    )
                   )
                 ),
               )
