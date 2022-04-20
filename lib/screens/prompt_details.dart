@@ -1,6 +1,7 @@
 import 'package:bridge/models/comments.dart';
 import 'package:bridge/models/prompts.dart';
 import 'package:bridge/widgets/comment_layout.dart';
+import 'package:bridge/widgets/new_comment_form.dart';
 import 'package:flutter/material.dart';
 
 class PromptDetailScreen extends StatefulWidget {
@@ -70,11 +71,25 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // put navigation to add_comment_screen here
+          _showMaterialDialog();
         },
         label: const Text('Add Comment'),
         icon: const Icon(Icons.comment),
       ),
     );
+  }
+
+  void _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const FractionallySizedBox(
+            heightFactor: .8,
+            child: AlertDialog(
+              title: Text('New Comment'),
+              content: NewCommentForm(), 
+            ),
+          );
+        });
   }
 }
