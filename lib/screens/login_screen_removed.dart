@@ -14,48 +14,43 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget> [
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
             const Padding(
               padding: EdgeInsets.only(top: 140, bottom: 40),
               child: SizedBox(
-                width: 200,
-                height: 200,
-                child: DecoratedBox (
-                  decoration: BoxDecoration(
-                    color: Colors.blue
+                  width: 200,
+                  height: 200,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(color: Colors.blue),
+                  )),
+            ),
+            const Center(
+              child: SizedBox(
+                width: 300,
+                child: TextField(
+                    decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.account_box,
+                    color: Colors.blue,
                   ),
-                )
+                  hintText: "username",
+                )),
               ),
             ),
             const Center(
               child: SizedBox(
                 width: 300,
                 child: TextField(
-                  decoration: InputDecoration (
-                    icon: Icon(
-                      Icons.account_box,
-                      color: Colors.blue,
-                    ),
-                    hintText: "username",
-                  )
-                ),
-              ),
-            ),
-            const Center(
-              child: SizedBox(
-                width: 300,
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration (
-                    icon: Icon(
-                      Icons.lock_sharp,
-                      color: Colors.blue,
-                    ),
-                    hintText: "password",
-                  )
-                ),
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.lock_sharp,
+                        color: Colors.blue,
+                      ),
+                      hintText: "password",
+                    )),
               ),
             ),
             Padding(
@@ -65,26 +60,22 @@ class LoginScreen extends StatelessWidget {
                   child: ElevatedButton(
                     child: const SizedBox(
                       width: 75,
-                      child: Center(
-                        child: Text("login")),
+                      child: Center(child: Text("login")),
                     ),
                     onPressed: () => Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen()
-                      )
-                    ), 
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen())),
                   ),
                 ),
               ),
             ),
             Center(
-              child: InkWell(
-                child: const Text('forgot password?',
-                style: TextStyle(color: Color.fromARGB(199, 4, 18, 95))),
-                onTap: () {},
-              )
-            ),
+                child: InkWell(
+              child: const Text('forgot password?',
+                  style: TextStyle(color: Color.fromARGB(199, 4, 18, 95))),
+              onTap: () {},
+            )),
             const Padding(
               padding: EdgeInsets.only(top: 20),
               child: Divider(
@@ -95,55 +86,49 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             const Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 15.0),
-                child: Text('login with'),
-              )
-            ),
-            Row (
+                child: Padding(
+              padding: EdgeInsets.only(bottom: 15.0),
+              child: Text('login with'),
+            )),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget> [
+              children: <Widget>[
                 SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: TextButton(
-                    child: const FaIcon(FontAwesomeIcons.google),
-                  onPressed: () {
-                    GoogleProviderButtonStyle();
-                  },
-                  )
-                ),
+                    width: 40,
+                    height: 40,
+                    child: TextButton(
+                      child: const FaIcon(FontAwesomeIcons.google),
+                      onPressed: () {
+                        GoogleProviderButtonStyle();
+                      },
+                    )),
                 SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: TextButton(
-                    child: const FaIcon(FontAwesomeIcons.facebook),
-                  onPressed: () {
-                    FacebookProviderButtonStyle();
-                  },
-                  )
-                ),
+                    width: 40,
+                    height: 40,
+                    child: TextButton(
+                      child: const FaIcon(FontAwesomeIcons.facebook),
+                      onPressed: () {
+                        FacebookProviderButtonStyle();
+                      },
+                    )),
               ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: Center(
-                child: InkWell(
-                  child: const Text('sign-up',
-                  style: TextStyle(color: Color.fromARGB(199, 4, 18, 95))),
-                  onTap: () {
-                    const RegisterScreen(
-                      providerConfigs: [
-                        EmailProviderConfiguration(),
-                      ],
-                    );
-                  },
-                )
-              ),
+                  child: InkWell(
+                child: const Text('sign-up',
+                    style: TextStyle(color: Color.fromARGB(199, 4, 18, 95))),
+                onTap: () {
+                  const RegisterScreen(
+                    providerConfigs: [
+                      EmailProviderConfiguration(),
+                    ],
+                  );
+                },
+              )),
             ),
-          ]
-        )
-      ),
+          ])),
     );
   }
 }
