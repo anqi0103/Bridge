@@ -1,9 +1,10 @@
+import 'package:bridge/models/comments.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class CommentBody {
-  String? body = '';
+  String body = '';
 }
-
 class NewCommentForm extends StatefulWidget {
   const NewCommentForm({ Key? key }) : super(key: key);
 
@@ -34,7 +35,14 @@ class _NewCommentFormState extends State<NewCommentForm> {
       onPressed: () async {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
-          // Send the commentBody.body to Cloud Firestore!
+          var random = Random();
+          var randomNum = random.nextInt(100);
+          Comments newComment = Comments(
+            comment: commentBody.body,
+            rating: 0,
+            username: 'hardcoded-user$randomNum'
+          );
+          newComment.addComment();
           Navigator.of(context).pop();
         }
       },
@@ -54,7 +62,7 @@ class _NewCommentFormState extends State<NewCommentForm> {
           border: OutlineInputBorder()
         ),
         onSaved: (newValue) {
-          commentBody.body = newValue;
+          commentBody.body = newValue!;
         },
         validator: (value) {
           if (value == null || value.isEmpty) {

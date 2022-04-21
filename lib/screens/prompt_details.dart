@@ -60,7 +60,6 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
                               ', to explore strange new worlds. To seek out new...',
                     rating: 50,
                     username: 'anon_$index',
-                    promptID: 'abc_$index'
                   )  
                 );
                 // return CommentLayout(comment: CommentsList[index]);
