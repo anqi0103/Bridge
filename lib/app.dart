@@ -1,4 +1,4 @@
-import 'package:bridge/screens/login_screen.dart';
+import 'package:bridge/widgets/user_auth.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -14,7 +14,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const Scaffold(
-          body: LoginScreen(),
+          body: UserAuth(),
       )
     );
   }

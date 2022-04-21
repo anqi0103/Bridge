@@ -1,5 +1,6 @@
 import 'package:bridge/models/prompts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/auth.dart';
 import './prompt_details.dart';
 import './test_model_screen.dart';
 
@@ -65,6 +66,7 @@ class HomeScreen extends StatelessWidget {
                 ), 
               child: const Text('View Models')
             ),
+            const SignOutButton(),
           ],)
         ),
       )

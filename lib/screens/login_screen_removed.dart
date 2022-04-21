@@ -1,4 +1,7 @@
+// ignore_for_file: unnecessary_const, avoid_print
+
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'home_screen_prompts.dart';
@@ -105,7 +108,9 @@ class LoginScreen extends StatelessWidget {
                   height: 40,
                   child: TextButton(
                     child: const FaIcon(FontAwesomeIcons.google),
-                  onPressed: () {},
+                  onPressed: () {
+                    GoogleProviderButtonStyle();
+                  },
                   )
                 ),
                 SizedBox(
@@ -113,7 +118,9 @@ class LoginScreen extends StatelessWidget {
                   height: 40,
                   child: TextButton(
                     child: const FaIcon(FontAwesomeIcons.facebook),
-                  onPressed: () {},
+                  onPressed: () {
+                    FacebookProviderButtonStyle();
+                  },
                   )
                 ),
               ],
@@ -124,7 +131,13 @@ class LoginScreen extends StatelessWidget {
                 child: InkWell(
                   child: const Text('sign-up',
                   style: TextStyle(color: Color.fromARGB(199, 4, 18, 95))),
-                  onTap: () {},
+                  onTap: () {
+                    const RegisterScreen(
+                      providerConfigs: [
+                        EmailProviderConfiguration(),
+                      ],
+                    );
+                  },
                 )
               ),
             ),
