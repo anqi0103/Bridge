@@ -56,5 +56,5 @@ class UserAuth extends StatelessWidget {
         return const HomeScreen();
       },
     );
-  }
+  } 
 }
