@@ -1,5 +1,5 @@
+import 'package:bridge/widgets/user_auth.dart';
 import 'package:flutter/material.dart';
-import './screens/home_screen_prompts.dart';
 
 class App extends StatelessWidget {
   final String title;
@@ -9,17 +9,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bridge',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
+        title: 'Bridge',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: Scaffold(
           appBar: AppBar(
             title: const Text('Bridge'),
           ),
-          body: 
-            const HomeScreen(),
-      )
-    );
+          body: const UserAuth(),
+        ));
   }
 }
