@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutterfire_ui/auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../screens/home_screen_prompts.dart';
 
@@ -12,17 +12,49 @@ class UserAuth extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
-      initialData: FirebaseAuth.instance.currentUser,
       builder: (context, snapshot) {
-        // User is not signed in
+
         if (!snapshot.hasData) {
-          return const SignInScreen(providerConfigs: [
-            EmailProviderConfiguration(),
-          ]);
+          return SignInScreen(
+            headerBuilder: (context, constraints, reqdouble) {
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Center(
+                      child: Text('bridge',
+                          style: TextStyle(
+                            fontSize: 50,
+                            color: Colors.blue,
+                          )),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Center(
+                          child: FaIcon(FontAwesomeIcons.bridgeWater,
+                              color: Colors.blue, size: 75),
+                        ),
+                        FaIcon(FontAwesomeIcons.bridgeWater,
+                            color: Colors.blue, size: 75),
+                        FaIcon(FontAwesomeIcons.bridgeWater,
+                            color: Colors.blue, size: 75),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+            providerConfigs: const [
+              EmailProviderConfiguration(),
+              GoogleProviderConfiguration(
+                  clientId:
+                      '95176891876-49mmupo3nk65guj8pgmd4edu8a8pndse.apps.googleusercontent.com'
+                      )
+            ],
+          );
         }
 
-        // Render your application if authenticated
-        return const HomeScreen();
+        return HomeScreen(user: snapshot.data!);
       },
     );
   }
