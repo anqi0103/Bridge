@@ -13,7 +13,6 @@ class UserAuth extends StatelessWidget {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-
         if (!snapshot.hasData) {
           return SignInScreen(
             headerBuilder: (context, constraints, reqdouble) {
@@ -48,8 +47,7 @@ class UserAuth extends StatelessWidget {
               EmailProviderConfiguration(),
               GoogleProviderConfiguration(
                   clientId:
-                      '95176891876-49mmupo3nk65guj8pgmd4edu8a8pndse.apps.googleusercontent.com'
-                      )
+                      '95176891876-u330m7kctqp2kn0q89pq1a5g0tet3dsj.apps.googleusercontent.com')
             ],
           );
         }

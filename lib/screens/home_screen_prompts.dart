@@ -6,8 +6,8 @@ import './prompt_details.dart';
 import './test_model_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key, required this.user}) : super(key: key);
-  User user;
+  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +69,7 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => const TestModelScreen())),
                   child: const Text('View Models')),
-              ElevatedButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignOutButton())),
-                  child: const Text('View Models')),
+              const SignOutButton(),
             ],
           )),
         ));
