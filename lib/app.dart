@@ -13,11 +13,8 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Bridge'),
-          ),
-          body: const UserAuth(),
+        home: const Scaffold(
+          body: UserAuth(),
         ));
   }
 }
