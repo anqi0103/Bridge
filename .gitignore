@@ -9,6 +9,7 @@
 .buildlog/
 .history
 .svn/
+windows/flutter/
 
 # IntelliJ related
 *.iml
