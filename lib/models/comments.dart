@@ -8,7 +8,7 @@ class Comments {
 
   Comments({required this.comment, required this.username, required this.rating});
 
-  factory Comments.fromFirestore(DocumentSnapshot document) {
+  factory Comments.fromFirestore(Map<dynamic, dynamic> document) {
     return Comments(
       comment: document['comment'],
       username: document['username'],
