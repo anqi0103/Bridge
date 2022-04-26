@@ -1,21 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:bridge/models/comments.dart';
 import 'package:bridge/models/prompts.dart';
 import 'package:bridge/screens/profile_screen.dart';
 import 'package:bridge/widgets/comment_layout.dart';
 import 'package:bridge/widgets/new_comment_form.dart';
-import 'package:flutter/material.dart';
 
 class PromptDetailScreen extends StatefulWidget {
-  final List comments;
   final Prompts prompt;
 
-  const PromptDetailScreen({ Key? key, required this.comments, required this.prompt }) : super(key: key);
+  const PromptDetailScreen({ Key? key, required this.prompt }) : super(key: key);
 
   @override
   State<PromptDetailScreen> createState() => _PromptDetailScreenState();
 }
 
 class _PromptDetailScreenState extends State<PromptDetailScreen> {
+  late String id = widget.prompt.promptID;
+
+  late final Stream<QuerySnapshot> _commentsStream = 
+  FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,45 +36,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
           ),
         )],
       ),
-      body: Column(
-        children: [
-          // Doing it this way fixes the prompt header so it can always be seen.
-          // Alternately we could have it unfixed, and it would disappear as we
-          // scroll...
-          Container(
-            height: 100,
-            color: Colors.greenAccent,
-            child: Center(child: 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.prompt.prompt, 
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6
-                )
-              )
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.comments.length,
-              itemBuilder: (context, index) {
-                return CommentLayout(
-                  comment: Comments(
-                    // Hard-coded this as well, temporarily. 
-                    comment:  'Space, the final frontier. These are the voyages '
-                              'of the starship Enterprise. It\'s continuing mission'
-                              ', to explore strange new worlds. To seek out new...',
-                    rating: 50,
-                    username: 'anon_$index',
-                  )  
-                );
-                // return CommentLayout(comment: CommentsList[index]);
-              },
-            ),
-          ),
-        ],
-      ),
+      body: commentsStreamBuilder(context),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           _showMaterialDialog();
@@ -76,6 +44,59 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         label: const Text('Add Comment'),
         icon: const Icon(Icons.comment),
       ),
+    );
+  }
+
+  Widget commentsStreamBuilder (BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _commentsStream,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+        var commentsList =
+            snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
+              return Comments.fromFirestore(data);
+            }).toList();
+            
+      
+        return Column(
+          children: [
+            // Doing it this way fixes the prompt header so it can always be seen.
+            // Alternately we could have it unfixed, and it would disappear as we
+            // scroll...
+            Container(
+              height: 100,
+              color: Colors.greenAccent,
+              child: Center(child: 
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.prompt.prompt, 
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline6
+                  )
+                )
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.prompt.numberComments,
+                itemBuilder: (context, index) {
+                  var comment = commentsList[index];
+                  return CommentLayout(
+                    comment: comment 
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      }
     );
   }
 

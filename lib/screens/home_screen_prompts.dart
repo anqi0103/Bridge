@@ -30,6 +30,15 @@ class _HomeScreen extends State<HomeScreen> {
         if (snapshot.data == null) {
           return const Text("snapshot.data is null");
         }
+
+        var promptList =
+            snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
+              var temp = Prompts.fromFirestore(data);
+              temp.promptID = document.id;
+              return temp;
+            }).toList();
+
         return Scaffold(
           appBar: AppBar(
             title: const Text("Today's Prompts"),
@@ -39,49 +48,40 @@ class _HomeScreen extends State<HomeScreen> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) => ListTile(
-                    title: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          alignment: Alignment.topLeft,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          ), 
-                          child: Text(snapshot.data!.docs.elementAt(index)["prompt"]),
-                        ),
-                        
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 5.0),
-                            child: const Text("7 replies"),
+                  itemCount: promptList.length,
+                  itemBuilder: (context, index) {
+                    var prompt = promptList[index];
+                    return ListTile(
+                      title: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            alignment: Alignment.topLeft,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(5),
+                            ), 
+                            child: Text(prompt.prompt),
                           ),
-                        ),
-                      ],
-                    ),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PromptDetailScreen(
-                          comments: List<String>.generate(
-                            100,
-                            (i) => 'Item $i',
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 5.0),
+                              child: Text(prompt.numberComments.toString() + ' replies'),
+                            ),
                           ),
-                          prompt: Prompts(
-                            // Hard-coded this with random mock data for now.
-                            // We'll get it connected to Firebase at some point.
-                            prompt:
-                                snapshot.data!.docs.elementAt(index)["prompt"],
-                            numberComments: 100,
-                            numberTimesDisplayed: 3,
+                        ],
+                      ),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PromptDetailScreen(
+                            prompt: prompt
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  }, 
                   padding: const EdgeInsets.all(10),
                 ),
               ),
