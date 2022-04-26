@@ -1,12 +1,15 @@
 import 'package:bridge/models/comments.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CommentBody {
   String body = '';
 }
 class NewCommentForm extends StatefulWidget {
-  const NewCommentForm({ Key? key }) : super(key: key);
+  final String id;
+
+  const NewCommentForm({ required this.id, Key? key }) : super(key: key);
 
   @override
   State<NewCommentForm> createState() => _NewCommentFormState();
@@ -35,14 +38,13 @@ class _NewCommentFormState extends State<NewCommentForm> {
       onPressed: () async {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
-          var random = Random();
-          var randomNum = random.nextInt(100);
+          var currentUser = FirebaseAuth.instance.currentUser?.uid;
           Comments newComment = Comments(
             comment: commentBody.body,
             rating: 0,
-            username: 'hardcoded-user$randomNum'
+            username: currentUser!
           );
-          newComment.addComment();
+          newComment.addComment(widget.id);
           Navigator.of(context).pop();
         }
       },
