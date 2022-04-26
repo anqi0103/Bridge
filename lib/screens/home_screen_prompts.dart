@@ -1,77 +1,104 @@
 import 'package:bridge/models/prompts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import './prompt_details.dart';
 import './test_model_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.user}) : super(key: key);
   final User user;
 
   @override
+  _HomeScreen createState() => _HomeScreen();
+}
+
+class _HomeScreen extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    print("db test: current user ID: " + user.uid);
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('Bridge'),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-              child: Column(
+    return StreamBuilder<QuerySnapshot>(
+      stream:
+          FirebaseFirestore.instance.collection('prompts').limit(5).snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong: ${snapshot.error}');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: Text("Loading..."));
+        }
+        if (snapshot.data == null) {
+          return const Text("snapshot.data is null");
+        }
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Today's Prompts"),
+          ),
+          // Need to rewrite here using ListView and map the prompts
+          body: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.only(top: 15.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Center(
-                    child: Text("Today's Prompts",
-                        style: Theme.of(context).textTheme.headline6),
-                  ),
-                ),
-              ),
-              // Need to rewrite here using ListView and map the prompts
-              Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.black, width: .5),
-                        borderRadius: BorderRadius.circular(5)),
-                    subtitle:
-                        const Text('Here\'s a comment that says some stuff.'),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) => ListTile(
+                    title: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          alignment: Alignment.topLeft,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(5),
+                          ), 
+                          child: Text(snapshot.data!.docs.elementAt(index)["prompt"]),
+                        ),
+                        
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 5.0),
+                            child: const Text("7 replies"),
+                          ),
+                        ),
+                      ],
+                    ),
                     onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PromptDetailScreen(
-                                  comments: List<String>.generate(
-                                    100,
-                                    (i) => 'Item $i',
-                                  ),
-                                  prompt: Prompts(
-                                      // Hard-coded this with random mock data for now.
-                                      // We'll get it connected to Firebase at some point.
-                                      prompt: 'What do you think the world '
-                                          'will look like in 300 years?',
-                                      numberComments: 100,
-                                      numberTimesDisplayed: 3),
-                                ))),
-                  )),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10.0),
-                  child: const Text("7 replies"),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PromptDetailScreen(
+                          comments: List<String>.generate(
+                            100,
+                            (i) => 'Item $i',
+                          ),
+                          prompt: Prompts(
+                            // Hard-coded this with random mock data for now.
+                            // We'll get it connected to Firebase at some point.
+                            prompt:
+                                snapshot.data!.docs.elementAt(index)["prompt"],
+                            numberComments: 100,
+                            numberTimesDisplayed: 3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(10),
                 ),
               ),
               ElevatedButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TestModelScreen())),
-                  child: const Text('View Models')),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TestModelScreen(),
+                  ),
+                ),
+                child: const Text('View Models'),
+              ),
               const SignOutButton(),
             ],
-          )),
-        ));
+          ),
+        );
+      },
+    );
   }
 }
