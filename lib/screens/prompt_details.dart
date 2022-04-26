@@ -1,5 +1,6 @@
 import 'package:bridge/models/comments.dart';
 import 'package:bridge/models/prompts.dart';
+import 'package:bridge/screens/profile_screen.dart';
 import 'package:bridge/widgets/comment_layout.dart';
 import 'package:bridge/widgets/new_comment_form.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         actions: [Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
-            // onTap: (() => Navigator.push(context, MaterialPageRoute(builder: ProfileScreen()))),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen())),
             child: const Icon(Icons.account_circle_rounded),
           ),
         )],
