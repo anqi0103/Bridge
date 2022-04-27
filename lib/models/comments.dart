@@ -16,10 +16,10 @@ class Comments {
     );
   }
 
-  void addComment() {
+  void addComment(String id) {
     final databaseReference = FirebaseFirestore.instance;
     databaseReference.collection('prompts')
-      .doc('gESp48pyblhRawOSobJP')
+      .doc(id)
       .collection('comments')
       .doc()
       .set({
@@ -27,6 +27,7 @@ class Comments {
         'username' : username,
         'rating': rating,
       });
+    databaseReference.collection('prompts').doc(id).update({"numberComments": FieldValue.increment(1)});
   }
 
 }
