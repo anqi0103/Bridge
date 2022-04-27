@@ -15,40 +15,49 @@ class UserAuth extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return SignInScreen(
+              sideBuilder: (context, constraints) => drawBridge(),
               headerBuilder: (context, constraints, reqdouble) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const Center(
-                        child: Text('bridge',
-                            style: TextStyle(
-                              fontSize: 50,
-                              color: Colors.blue,
-                            )),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Center(
-                            child: FaIcon(FontAwesomeIcons.bridgeWater,
-                                color: Colors.blue, size: 75),
-                          ),
-                          FaIcon(FontAwesomeIcons.bridgeWater,
-                              color: Colors.blue, size: 75),
-                          FaIcon(FontAwesomeIcons.bridgeWater,
-                              color: Colors.blue, size: 75),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                return drawBridge();
               },
               providerConfigs: const [
                 EmailProviderConfiguration(),
               ]);
         }
+
         return HomeScreen(user: snapshot.data!);
       },
+    );
+  }
+
+  SingleChildScrollView drawBridge() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Center(
+            child: Text('bridge',
+                style: TextStyle(
+                  fontSize: 50,
+                  color: Colors.blue,
+                )),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Center(
+                child: FaIcon(FontAwesomeIcons.bridgeWater,
+                    color: Colors.blue, size: 75),
+              ),
+              FaIcon(
+                FontAwesomeIcons.bridgeWater,
+                color: Colors.blue,
+                size: 75,
+              ),
+              FaIcon(FontAwesomeIcons.bridgeWater,
+                  color: Colors.blue, size: 75),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
