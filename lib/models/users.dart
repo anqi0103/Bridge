@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:english_words/english_words.dart';
 
 class Users {
   String email;
@@ -30,5 +31,12 @@ class Users {
 
   static CollectionReference getUserCollection() {
     return FirebaseFirestore.instance.collection('users');
+  }
+
+  static String createAnonymousName() {
+    final words = <String>[];
+
+    generateWordPairs().take(1).forEach((word) => words.add(word.asPascalCase));
+    return words.first;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bridge/models/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -24,6 +25,14 @@ class UserAuth extends StatelessWidget {
               ]);
         }
 
+        // checks to see if user is a document in Firestore prior to logging in
+        final user = FirebaseAuth.instance.currentUser;
+        var userRef = Users.getUserCollection().doc(user!.uid);
+        userRef.get().then((foundUser) {
+          if (foundUser.data() == null) {
+            _createUserFirestore();
+          }
+        });
         return HomeScreen(user: snapshot.data!);
       },
     );
@@ -60,4 +69,18 @@ class UserAuth extends StatelessWidget {
       ),
     );
   }
+
+  _createUserFirestore() {
+    final user = FirebaseAuth.instance.currentUser;
+    Users.getUserCollection().doc(user!.uid).set({
+      "email": user.email,
+      "attribute": "",
+      "rating": 0,
+      "numberComments": 0,
+      "numberVotes": 0,
+      "anonymousName": Users.createAnonymousName()
+    });
+  }
+
+
 }
