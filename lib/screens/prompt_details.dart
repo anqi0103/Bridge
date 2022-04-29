@@ -57,11 +57,14 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
           return const CircularProgressIndicator();
         }
         var commentsList =
-            snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
-              return Comments.fromFirestore(data);
-            }).toList();
-            
+          snapshot.data!.docs.map((DocumentSnapshot document) {
+            Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
+            var temp = Comments.fromFirestore(data);
+            temp.commentID = document.id;
+            return temp;
+          }).toList();
+          
+        commentsList.sort((a, b) => b.rating.compareTo(a.rating));            
       
         return Column(
           children: [
@@ -70,14 +73,14 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
             // scroll...
             Container(
               height: 100,
-              color: Colors.greenAccent,
+              color: Colors.blue[800],
               child: Center(child: 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.prompt.prompt, 
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6
+                    style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white)
                   )
                 )
               ),
@@ -88,6 +91,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
                 itemBuilder: (context, index) {
                   var comment = commentsList[index];
                   return CommentLayout(
+                    promptID: id,
                     comment: comment 
                   );
                 },

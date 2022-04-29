@@ -4,15 +4,21 @@ class Comments {
   String comment;
   String username;
   int rating;
-  // String promptID;
+  String commentID;
 
-  Comments({required this.comment, required this.username, required this.rating});
+  Comments({
+    required this.comment, 
+    required this.username, 
+    required this.rating,
+    required this.commentID
+  });
 
   factory Comments.fromFirestore(Map<dynamic, dynamic> document) {
     return Comments(
       comment: document['comment'],
       username: document['username'],
       rating: document['rating'],
+      commentID: ''
     );
   }
 
@@ -28,6 +34,26 @@ class Comments {
         'rating': rating,
       });
     databaseReference.collection('prompts').doc(id).update({"numberComments": FieldValue.increment(1)});
+  }
+
+  void upvoteComment(String promptID, String commentID) {
+    final databaseReference = FirebaseFirestore.instance;
+    databaseReference
+      .collection('prompts')
+      .doc(promptID)
+      .collection('comments')
+      .doc(commentID)
+      .update({"rating": FieldValue.increment(1)});
+  }
+
+  void downvoteComment(String promptID, String commentID) {
+    final databaseReference = FirebaseFirestore.instance;
+    databaseReference
+      .collection('prompts')
+      .doc(promptID)
+      .collection('comments')
+      .doc(commentID)
+      .update({"rating": FieldValue.increment(-1)});
   }
 
 }
