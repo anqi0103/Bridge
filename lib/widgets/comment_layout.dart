@@ -2,9 +2,9 @@ import 'package:bridge/models/comments.dart';
 import 'package:flutter/material.dart';
 
 class CommentLayout extends StatelessWidget {
-  Comments comment;
+  final Comments comment;
 
-  CommentLayout({Key? key, required this.comment}) : super(key: key);
+  const CommentLayout({Key? key, required this.comment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
