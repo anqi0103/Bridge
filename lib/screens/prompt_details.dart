@@ -18,10 +18,6 @@ class PromptDetailScreen extends StatefulWidget {
 class _PromptDetailScreenState extends State<PromptDetailScreen> {
   late String id = widget.prompt.promptID;
 
-  late final Stream<QuerySnapshot> _commentsStream = 
-  FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +44,9 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
   }
 
   Widget commentsStreamBuilder (BuildContext context) {
+    final Stream<QuerySnapshot> _commentsStream = 
+      FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();
+
     return StreamBuilder<QuerySnapshot>(
       stream: _commentsStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -58,11 +57,14 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
           return const CircularProgressIndicator();
         }
         var commentsList =
-            snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
-              return Comments.fromFirestore(data);
-            }).toList();
-            
+          snapshot.data!.docs.map((DocumentSnapshot document) {
+            Map<String, dynamic> data = document.data()! as Map<String, dynamic>; 
+            var temp = Comments.fromFirestore(data);
+            temp.commentID = document.id;
+            return temp;
+          }).toList();
+          
+        commentsList.sort((a, b) => b.rating.compareTo(a.rating));            
       
         return Column(
           children: [
@@ -71,24 +73,25 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
             // scroll...
             Container(
               height: 100,
-              color: Colors.greenAccent,
+              color: Colors.blue[800],
               child: Center(child: 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.prompt.prompt, 
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6
+                    style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white)
                   )
                 )
               ),
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.prompt.numberComments,
+                itemCount: commentsList.length,
                 itemBuilder: (context, index) {
                   var comment = commentsList[index];
                   return CommentLayout(
+                    promptID: id,
                     comment: comment 
                   );
                 },
@@ -104,11 +107,11 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
     showDialog(
         context: context,
         builder: (context) {
-          return const FractionallySizedBox(
+          return FractionallySizedBox(
             heightFactor: .8,
             child: AlertDialog(
-              title: Text('New Comment'),
-              content: NewCommentForm(), 
+              title: const Text('New Comment'),
+              content: NewCommentForm(id: id), 
             ),
           );
         });

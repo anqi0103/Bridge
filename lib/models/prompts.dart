@@ -1,4 +1,3 @@
-
 class Prompts {
   String prompt;
   int numberTimesDisplayed;
