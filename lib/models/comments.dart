@@ -59,6 +59,15 @@ class Comments {
       .update({"rating": FieldValue.increment(-1)});
   }
 
+  // void getComment(String promptID, String commentID) {
+  //   FirebaseFirestore.instance
+  //     .collection('prompts')
+  //     .doc(promptID)
+  //     .collection('comments')
+  //     .doc(commentID)
+  //     .get();
+  // }
+
   Future<void> deleteComment(String pid) {
     final comments = FirebaseFirestore.instance.collection('prompts').doc(pid).collection('comments');
     final uid = FirebaseAuth.instance.currentUser?.uid;

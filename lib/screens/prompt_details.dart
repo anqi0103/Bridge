@@ -68,17 +68,15 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
       
         return Column(
           children: [
-            // Doing it this way fixes the prompt header so it can always be seen.
-            // Alternately we could have it unfixed, and it would disappear as we
-            // scroll...
             Container(
-              height: 100,
               color: Colors.blue[800],
+              height: 150,
               child: Center(child: 
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.prompt.prompt, 
+                    overflow: TextOverflow.fade,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white)
                   )
