@@ -2,9 +2,10 @@ import 'package:bridge/models/comments.dart';
 import 'package:flutter/material.dart';
 
 class CommentLayout extends StatelessWidget {
-  Comments comment;
+  final Comments comment;
+  final String promptID;
 
-  CommentLayout({Key? key, required this.comment}) : super(key: key);
+  const CommentLayout({Key? key, required this.comment, required this.promptID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +32,15 @@ class CommentLayout extends StatelessWidget {
             ),
           ),
           Row(
-            children: const [
-              Icon(Icons.arrow_circle_up),
-              Icon(Icons.arrow_circle_down)
+            children: [
+              InkWell(
+                child: Icon(Icons.arrow_circle_up, color: Colors.blue[800],),
+                onTap: () => comment.upvoteComment(promptID, comment.commentID),
+              ),
+              InkWell(
+                child: Icon(Icons.arrow_circle_down, color: Colors.amber[800],),
+                onTap: () => comment.downvoteComment(promptID, comment.commentID)
+              )
             ],
           ),
         ]

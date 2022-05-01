@@ -1,6 +1,5 @@
 import 'package:bridge/models/comments.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CommentBody {
@@ -42,7 +41,8 @@ class _NewCommentFormState extends State<NewCommentForm> {
           Comments newComment = Comments(
             comment: commentBody.body,
             rating: 0,
-            username: currentUser!
+            username: currentUser!,
+            commentID: ''
           );
           newComment.addComment(widget.id);
           Navigator.of(context).pop();
