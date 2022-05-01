@@ -1,8 +1,8 @@
+import 'package:bridge/widgets/attribute_form.dart';
 import 'package:bridge/widgets/user_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -35,10 +35,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(5),
                   child: Center(
-                    child: FutureBuilder<DocumentSnapshot>(
-                        future: users
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
-                            .get(),
+                    child: StreamBuilder<DocumentSnapshot>(
+                        stream: users
+                            .doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
                             return const UserAuth();
@@ -57,7 +56,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                               Text("Comment count: ${data['numberComments']}"),
                               Text("Vote count: ${data['numberVotes']}"),
                               InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    _showMaterialDialog();
+                                  },
                                   child: const Text("Edit Attribute",
                                       style: TextStyle(color: Colors.blue))),
                             ]);
@@ -86,5 +87,17 @@ class _ProfileScreen extends State<ProfileScreen> {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserAuth()));
           },
         ));
+  }
+
+    void _showMaterialDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+              title: Text('Add Attribute'),
+              content: AttributeForm()
+              ,
+          );
+        });
   }
 }

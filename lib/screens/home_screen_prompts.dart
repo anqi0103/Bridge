@@ -3,9 +3,7 @@ import 'package:bridge/models/prompts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 import './prompt_details.dart';
-import './test_model_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.user}) : super(key: key);
