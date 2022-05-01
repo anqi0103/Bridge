@@ -47,7 +47,7 @@ class _NewCommentFormState extends State<NewCommentForm> {
           Comments newComment = Comments(
             comment: commentBody.body,
             rating: 0,
-            username: userRef.get('username').toString(),
+            username: userRef.get('anonymousName').toString(),
             commentID: ''
           );
           newComment.addComment(widget.id);
