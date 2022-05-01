@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -59,15 +61,6 @@ class Comments {
       .update({"rating": FieldValue.increment(-1)});
   }
 
-  // void getComment(String promptID, String commentID) {
-  //   FirebaseFirestore.instance
-  //     .collection('prompts')
-  //     .doc(promptID)
-  //     .collection('comments')
-  //     .doc(commentID)
-  //     .get();
-  // }
-
   Future<void> deleteComment(String pid) {
     final comments = FirebaseFirestore.instance.collection('prompts').doc(pid).collection('comments');
     final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -76,8 +69,8 @@ class Comments {
     return comments
       .doc(commentID)
       .delete()
-      .then((value) => print("Comment Deleted"))
-      .catchError((error) => print("Failed to delete comment: $error"));
+      .then((value) => log("Comment Deleted"))
+      .catchError((error) => log("Failed to delete comment: $error"));
   }
 
 }

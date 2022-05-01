@@ -93,7 +93,7 @@ class CommentLayout extends StatelessWidget {
     return userRef.get('anonymousName').toString();
   }
 
-  Future<String> getUserAttribute() {
+  Future<dynamic> getUserAttribute() {
     return FirebaseFirestore.instance
       .collection('users')
       .where('anonymousName', isEqualTo: comment.username)
@@ -102,9 +102,7 @@ class CommentLayout extends StatelessWidget {
         if (value.docs.isNotEmpty) {
           QueryDocumentSnapshot user = value.docs.first;
           return user.get('attribute');
-        } else {
-          return '';
-        }
+        } 
       });
   }
 
