@@ -43,7 +43,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
     );
   }
 
-  Widget commentsStreamBuilder (BuildContext context) {
+  Widget commentsStreamBuilder(BuildContext context) {
     final Stream<QuerySnapshot> _commentsStream = 
       FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();
 
