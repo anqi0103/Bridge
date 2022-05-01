@@ -1,3 +1,4 @@
+import 'package:bridge/screens/profile_screen.dart' as bridge_profile_screen;
 import 'package:bridge/models/prompts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -42,6 +43,13 @@ class _HomeScreen extends State<HomeScreen> {
         return Scaffold(
           appBar: AppBar(
             title: const Text("Today's Prompts"),
+            actions: [Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const bridge_profile_screen.ProfileScreen())),
+              child: const Icon(Icons.account_circle_rounded),
+            ),
+            )],
           ),
           // Need to rewrite here using ListView and map the prompts
           body: Column(
@@ -85,16 +93,6 @@ class _HomeScreen extends State<HomeScreen> {
                   padding: const EdgeInsets.all(10),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TestModelScreen(),
-                  ),
-                ),
-                child: const Text('View Models'),
-              ),
-              const SignOutButton(),
             ],
           ),
         );
