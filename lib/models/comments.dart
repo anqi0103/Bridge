@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Comments {
   String comment;
@@ -23,6 +26,7 @@ class Comments {
   }
 
   void addComment(String id) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     final databaseReference = FirebaseFirestore.instance;
     databaseReference.collection('prompts')
       .doc(id)
@@ -34,6 +38,7 @@ class Comments {
         'rating': rating,
       });
     databaseReference.collection('prompts').doc(id).update({"numberComments": FieldValue.increment(1)});
+    databaseReference.collection('users').doc(uid).update({"numberComments": FieldValue.increment(1)});
   }
 
   void upvoteComment(String promptID, String commentID) {
@@ -54,6 +59,18 @@ class Comments {
       .collection('comments')
       .doc(commentID)
       .update({"rating": FieldValue.increment(-1)});
+  }
+
+  Future<void> deleteComment(String pid) {
+    final comments = FirebaseFirestore.instance.collection('prompts').doc(pid).collection('comments');
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    FirebaseFirestore.instance.collection('users').doc(uid).update({"numberComments": FieldValue.increment(-1)});
+
+    return comments
+      .doc(commentID)
+      .delete()
+      .then((value) => log("Comment Deleted"))
+      .catchError((error) => log("Failed to delete comment: $error"));
   }
 
 }
