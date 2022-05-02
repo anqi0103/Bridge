@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../screens/home_screen_prompts.dart';
 
 class UserAuth extends StatelessWidget {
@@ -33,7 +32,8 @@ class UserAuth extends StatelessWidget {
             _createUserFirestore();
           }
         });
-        return HomeScreen(user: snapshot.data!);
+
+        return const HomeScreen();
       },
     );
   }
@@ -81,6 +81,4 @@ class UserAuth extends StatelessWidget {
       "anonymousName": Users.createAnonymousName()
     });
   }
-
-
 }
