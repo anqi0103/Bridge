@@ -11,12 +11,12 @@ class Prompts {
     required this.promptID
   });
 
-  factory Prompts.fromFirestore(Map<dynamic, dynamic> document) {
+  factory Prompts.fromFirestore(Map<dynamic, dynamic> document, String id) {
     return Prompts(
       prompt: document['prompt'],
       numberTimesDisplayed: document['numberTimesDisplayed'],
       numberComments: document['numberComments'],
-      promptID: ''
+      promptID: id,
     );
   }
 }
