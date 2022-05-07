@@ -8,6 +8,9 @@ class Users {
   int numberComments;
   int numberVotes;
   String anonymousName;
+  DateTime lastCommentTime;
+
+  final DateTime initializedDateTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   Users({
     this.email = '', 
@@ -15,8 +18,11 @@ class Users {
     this.rating = 0, 
     this.numberComments = 0, 
     this.numberVotes = 0, 
-    this.anonymousName = ''
-    });
+    this.anonymousName = '',
+    DateTime? lastCommentTime, 
+    }) 
+    : lastCommentTime = lastCommentTime?? DateTime.fromMillisecondsSinceEpoch(0);
+
 
   factory Users.fromFirestore(DocumentSnapshot document) {
     return Users(
@@ -25,7 +31,8 @@ class Users {
       rating : document['rating'],
       numberComments: document['numberComments'],
       numberVotes: document['numberVotes'],
-      anonymousName: document['anonymousName']
+      anonymousName: document['anonymousName'],
+      lastCommentTime: document['lastCommentTime']
     );
   }
 

@@ -39,6 +39,7 @@ class Comments {
       });
     databaseReference.collection('prompts').doc(id).update({"numberComments": FieldValue.increment(1)});
     databaseReference.collection('users').doc(uid).update({"numberComments": FieldValue.increment(1)});
+    databaseReference.collection('users').doc(uid).update({"lastCommentTime": DateTime.now()});
   }
 
   void upvoteComment(String promptID, String commentID) {

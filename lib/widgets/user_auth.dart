@@ -78,7 +78,8 @@ class UserAuth extends StatelessWidget {
       "rating": 0,
       "numberComments": 0,
       "numberVotes": 0,
-      "anonymousName": Users.createAnonymousName()
+      "anonymousName": Users.createAnonymousName(),
+      "lastCommentTime" : DateTime.fromMillisecondsSinceEpoch(0),
     });
   }
 }
