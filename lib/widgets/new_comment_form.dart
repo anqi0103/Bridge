@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CommentBody {
   String body = '';
 }
+
 class NewCommentForm extends StatefulWidget {
   final String id;
 
@@ -58,28 +59,55 @@ class _NewCommentFormState extends State<NewCommentForm> {
     );
   }
 
+  Widget bodyField() {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-  Widget bodyField(){
     return Expanded(
-      child: TextFormField(
-        textAlignVertical: TextAlignVertical.top,
-        expands: true,
-        maxLines: null,
-        autofocus: true,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder()
-        ),
-        onSaved: (newValue) {
-          commentBody.body = newValue!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Text is required';
-          }
-          return null;
-        },
-      ),
-    );
-  }
+      child: StreamBuilder<DocumentSnapshot>(
+        stream:
+            users.doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              } else {
+                Map<String, dynamic> data = 
+                    snapshot.data!.data() as Map<String, dynamic>;
+                final DateTime lastCommentTime = 
+                    (data['lastCommentTime']).toDate();
+                final DateTime currentTime = DateTime.now();
+                int differenceTime =
+                    currentTime.difference(lastCommentTime).inSeconds;
 
+                return TextFormField(
+                  textAlignVertical: TextAlignVertical.top,
+                  expands: true,
+                  maxLines: null,
+                  autofocus: true,
+                  decoration:
+                      const InputDecoration(border: OutlineInputBorder()),
+                  onSaved: (newValue) {
+                    commentBody.body = newValue!;
+                  },
+                  validator: (value) {
+                    int charLength = 360 - value!.length;
+                    setState(() {
+                    differenceTime =
+                        currentTime.difference(lastCommentTime).inSeconds;
+                    charLength = 360 - value.length;
+                    });
+                    if (value == null || value.isEmpty) {
+                      return 'Text is required';
+                    } else if (differenceTime < 5) {
+                      int timeLeft = (differenceTime - 5).abs();
+                      return 'Please wait $timeLeft seconds and try again';
+                    } else if (value.length > 360) {
+                      charLength = (360 - value.length).abs();
+                      return 'Character length exceeded by $charLength';
+                    }
+                    return null;
+                  },
+                );
+              }
+            }));
+  }
 }
