@@ -74,7 +74,7 @@ class _NewCommentFormState extends State<NewCommentForm> {
                     snapshot.data!.data() as Map<String, dynamic>;
                 final DateTime lastCommentTime = 
                     (data['lastCommentTime']).toDate();
-                final DateTime currentTime = DateTime.now();
+                DateTime currentTime = DateTime.now();
                 int differenceTime =
                     currentTime.difference(lastCommentTime).inSeconds;
 
@@ -91,7 +91,8 @@ class _NewCommentFormState extends State<NewCommentForm> {
                   validator: (value) {
                     int charLength = 360 - value!.length;
                     setState(() {
-                    differenceTime =
+                      currentTime = DateTime.now();
+                      differenceTime =
                         currentTime.difference(lastCommentTime).inSeconds;
                     charLength = 360 - value.length;
                     });
