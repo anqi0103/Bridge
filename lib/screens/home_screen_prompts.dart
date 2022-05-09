@@ -47,8 +47,8 @@ class _HomeScreen extends State<HomeScreen> {
         QueryDocumentSnapshot<Map<String, dynamic>> doc;
         do {
           doc = promptsResult.docs.elementAt(random.nextInt(length));
-        } while (selectedDocs.contains(doc));
-        selectedDocs.add(doc);
+        } while (selectedDocs.contains(doc.id));
+        selectedDocs.add(doc.id);
         await tempPromptRef
             .collection('prompts')
             .add({'prompt': doc.reference});
