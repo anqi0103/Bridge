@@ -3,12 +3,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class CommentLayout extends StatelessWidget {
+class CommentLayout extends StatefulWidget {
   final Comments comment;
   final String promptID;
 
   const CommentLayout({Key? key, required this.comment, required this.promptID}) : super(key: key);
 
+  @override
+  State<CommentLayout> createState() => _CommentLayoutState();
+}
+
+class _CommentLayoutState extends State<CommentLayout> {
+  String _userAttribute = '';
+  
+  @override
+  void initState() {
+    super.initState();
+    getUserAttribute();
+  }
+
+  
   @override
   Widget build(BuildContext context) {   
     return Container(
@@ -25,18 +39,10 @@ class CommentLayout extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start, 
               children: [
                 Expanded(
-                  child: FutureBuilder(future: getUserAttribute(), builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(
-                        comment.username + ' - ' + snapshot.data.toString(),
-                        style: Theme.of(context).textTheme.bodyLarge
-                        );
-                    }
-                    return Text(
-                      comment.username,
-                      style: Theme.of(context).textTheme.bodyLarge
-                      );
-                  })
+                  child: Text(
+                    widget.comment.username + ' - ' + _userAttribute,
+                    style: Theme.of(context).textTheme.bodyLarge
+                  ),
                 ),
                 const Icon(Icons.star, color: Colors.amber,),
                 Icon(Icons.auto_awesome, color: Colors.pink[300],),
@@ -47,7 +53,7 @@ class CommentLayout extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(comment.comment),
+                    child: Text(widget.comment.comment),
                   ),
                 ],
               ),
@@ -56,21 +62,21 @@ class CommentLayout extends StatelessWidget {
               children: [
                 InkWell(
                   child: Icon(Icons.arrow_circle_up, color: Colors.blue[800],),
-                  onTap: () => comment.upvoteComment(promptID, comment.commentID),
+                  onTap: () => widget.comment.upvoteComment(widget.promptID, widget.comment.commentID),
                 ),
                 InkWell(
                   child: Icon(Icons.arrow_circle_down, color: Colors.amber[800],),
-                  onTap: () => comment.downvoteComment(promptID, comment.commentID)
+                  onTap: () => widget.comment.downvoteComment(widget.promptID, widget.comment.commentID)
                 ),
                 Expanded(
                   child: FutureBuilder(future: getUser(), builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (comment.username == snapshot.data) {
+                      if (widget.comment.username == snapshot.data) {
                         return Align(
                           alignment: Alignment.centerRight,
                           child: InkWell(
                             child: const Icon(Icons.delete_outline, color: Colors.red,),
-                            onTap: () => comment.deleteComment(promptID)
+                            onTap: () => widget.comment.deleteComment(widget.promptID)
                           ),
                         );
                       }
@@ -93,18 +99,19 @@ class CommentLayout extends StatelessWidget {
     return userRef.get('anonymousName').toString();
   }
 
-  Future<dynamic> getUserAttribute() {
-    return FirebaseFirestore.instance
+  Future<void> getUserAttribute() async {
+    await FirebaseFirestore.instance
       .collection('users')
-      .where('anonymousName', isEqualTo: comment.username)
+      .where('anonymousName', isEqualTo: widget.comment.username)
       .get()
       .then((value) {
         if (value.docs.isNotEmpty) {
           QueryDocumentSnapshot user = value.docs.first;
-          return user.get('attribute');
+          var attribute = user.get('attribute');
+          setState(() {
+            _userAttribute = attribute ;
+          });
         } 
       });
   }
-
-  
 }
