@@ -27,7 +27,10 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         actions: [Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen())),
+            onTap: () async { 
+              await Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileScreen()));
+              setState(() {});
+            },
             child: const Icon(Icons.account_circle_rounded),
           ),
         )],
@@ -45,7 +48,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
 
   Widget commentsStreamBuilder(BuildContext context) {
     final Stream<QuerySnapshot> _commentsStream = 
-      FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();
+      FirebaseFirestore.instance.collection('prompts').doc(id).collection('comments').snapshots();   
 
     return StreamBuilder<QuerySnapshot>(
       stream: _commentsStream,
