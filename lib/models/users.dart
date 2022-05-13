@@ -9,6 +9,7 @@ class Users {
   int numberVotes;
   String anonymousName;
   DateTime lastCommentTime;
+  int lastLoginDay;
 
   final DateTime initializedDateTime = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -20,6 +21,7 @@ class Users {
     this.numberVotes = 0, 
     this.anonymousName = '',
     DateTime? lastCommentTime, 
+    this.lastLoginDay = 1,
     }) 
     : lastCommentTime = lastCommentTime?? DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -32,7 +34,8 @@ class Users {
       numberComments: document['numberComments'],
       numberVotes: document['numberVotes'],
       anonymousName: document['anonymousName'],
-      lastCommentTime: document['lastCommentTime']
+      lastCommentTime: document['lastCommentTime'],
+      lastLoginDay: document['lastLoginDay'],
     );
   }
 
