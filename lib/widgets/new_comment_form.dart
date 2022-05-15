@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class CommentBody {
   String body = '';
 }
@@ -11,7 +10,7 @@ class CommentBody {
 class NewCommentForm extends StatefulWidget {
   final String id;
 
-  const NewCommentForm({ required this.id, Key? key }) : super(key: key);
+  const NewCommentForm({required this.id, Key? key}) : super(key: key);
 
   @override
   State<NewCommentForm> createState() => _NewCommentFormState();
@@ -23,17 +22,15 @@ class _NewCommentFormState extends State<NewCommentForm> {
 
   @override
   Widget build(BuildContext context) {
-
     return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          bodyField(),
-          const SizedBox(height: 8.0),
-          saveButton(context),
-        ],
-      )
-    );
+        key: formKey,
+        child: Column(
+          children: [
+            bodyField(),
+            const SizedBox(height: 8.0),
+            saveButton(context),
+          ],
+        ));
   }
 
   Widget saveButton(BuildContext context) {
@@ -44,14 +41,13 @@ class _NewCommentFormState extends State<NewCommentForm> {
         if (formKey.currentState!.validate()) {
           formKey.currentState!.save();
           var uid = FirebaseAuth.instance.currentUser?.uid;
-          var userRef = await users.doc(uid).get();      
+          var userRef = await users.doc(uid).get();
           Comments newComment = Comments(
-            comment: commentBody.body,
-            rating: 0,
-            username: userRef.get('anonymousName').toString(),
-            commentID: ''
-          );
-          newComment.addComment(widget.id);
+              comment: commentBody.body,
+              rating: 0,
+              username: userRef.get('anonymousName').toString(),
+              commentID: '');
+          await newComment.addComment(widget.id);
           Navigator.of(context).pop();
         }
       },
@@ -63,16 +59,16 @@ class _NewCommentFormState extends State<NewCommentForm> {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     return Expanded(
-      child: StreamBuilder<DocumentSnapshot>(
-        stream:
-            users.doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
+        child: StreamBuilder<DocumentSnapshot>(
+            stream:
+                users.doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
               } else {
-                Map<String, dynamic> data = 
+                Map<String, dynamic> data =
                     snapshot.data!.data() as Map<String, dynamic>;
-                final DateTime lastCommentTime = 
+                final DateTime lastCommentTime =
                     (data['lastCommentTime']).toDate();
                 DateTime currentTime = DateTime.now();
                 int differenceTime =
@@ -93,8 +89,8 @@ class _NewCommentFormState extends State<NewCommentForm> {
                     setState(() {
                       currentTime = DateTime.now();
                       differenceTime =
-                        currentTime.difference(lastCommentTime).inSeconds;
-                    charLength = 360 - value.length;
+                          currentTime.difference(lastCommentTime).inSeconds;
+                      charLength = 360 - value.length;
                     });
                     if (value == null || value.isEmpty) {
                       return 'Text is required';
