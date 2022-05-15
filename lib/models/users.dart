@@ -13,27 +13,29 @@ class Users {
   final DateTime initializedDateTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   Users({
-    this.email = '', 
-    this.attribute = '', 
-    this.rating = 0, 
-    this.numberComments = 0, 
-    this.numberVotes = 0, 
+    this.email = '',
+    this.attribute = '',
+    this.rating = 0,
+    this.numberComments = 0,
+    this.numberVotes = 0,
     this.anonymousName = '',
-    DateTime? lastCommentTime, 
-    }) 
-    : lastCommentTime = lastCommentTime?? DateTime.fromMillisecondsSinceEpoch(0);
+    DateTime? lastCommentTime,
+  }) : lastCommentTime =
+            lastCommentTime ?? DateTime.fromMillisecondsSinceEpoch(0);
 
-
-  factory Users.fromFirestore(DocumentSnapshot document) {
+  factory Users.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
     return Users(
-      email: document['email'],
-      attribute: document['attribute'],
-      rating : document['rating'],
-      numberComments: document['numberComments'],
-      numberVotes: document['numberVotes'],
-      anonymousName: document['anonymousName'],
-      lastCommentTime: document['lastCommentTime']
-    );
+        email: snapshot['email'],
+        attribute: snapshot['attribute'],
+        rating: snapshot['rating'],
+        numberComments: snapshot['numberComments'],
+        numberVotes: snapshot['numberVotes'],
+        anonymousName: snapshot['anonymousName'],
+        lastCommentTime: DateTime.fromMillisecondsSinceEpoch(
+            snapshot['lastCommentTime'].millisecondsSinceEpoch));
   }
 
   static CollectionReference getUserCollection() {
