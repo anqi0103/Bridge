@@ -76,10 +76,7 @@ PODS:
     - FirebaseFirestore/AutodetectLeveldb (= 8.14.0)
   - FirebaseFirestore/AutodetectLeveldb (8.14.0):
     - FirebaseFirestore/Base
-    - FirebaseFirestore/WithLeveldb
   - FirebaseFirestore/Base (8.14.0)
-  - FirebaseFirestore/WithLeveldb (8.14.0):
-    - FirebaseFirestore/Base
   - FirebaseStorage (8.14.0):
     - FirebaseCore (~> 8.0)
     - GTMSessionFetcher/Core (~> 1.5)
@@ -227,7 +224,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
   FirebaseDatabase: 8bfbe7bb8d355f9727507bcf4a2116cb3aabdc5e
   FirebaseDynamicLinks: 5fe9d2405cc93a58fead4af4ef4c81a466516ba0
-  FirebaseFirestore: dc1455307e2478af30dcd4c3020ba52654c6b62d
+  FirebaseFirestore: f054534fcd57b8665db3cd8f19481208437c2de7
   FirebaseStorage: 32ab036ce11eb7e94c279a238a65efa24f81593d
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_facebook_auth: a030aef1c2552fdc7cb090acc716ac836e3bb63c
@@ -247,4 +244,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f842bb3baaf6a71557e2d8ba9fd00ea88df31977
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2

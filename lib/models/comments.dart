@@ -10,68 +10,108 @@ class Comments {
   String commentID;
 
   Comments({
-    required this.comment, 
-    required this.username, 
+    required this.comment,
+    required this.username,
     required this.rating,
-    required this.commentID
+    required this.commentID,
   });
 
   factory Comments.fromFirestore(Map<dynamic, dynamic> document) {
     return Comments(
-      comment: document['comment'],
-      username: document['username'],
-      rating: document['rating'],
-      commentID: ''
-    );
+        comment: document['comment'],
+        username: document['username'],
+        rating: document['rating'],
+        commentID: '');
   }
 
-  void addComment(String id) {
+  Future<void> addComment(String id) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final databaseReference = FirebaseFirestore.instance;
-    databaseReference.collection('prompts')
-      .doc(id)
-      .collection('comments')
-      .doc()
-      .set({
-        'comment' : comment,
-        'username' : username,
+    final prompt = await databaseReference.collection('prompts').doc(id).get();
+    databaseReference
+        .collection('prompts')
+        .doc(id)
+        .collection('comments')
+        .doc()
+        .set(
+      {
+        'comment': comment,
+        'username': username,
         'rating': rating,
-      });
-    databaseReference.collection('prompts').doc(id).update({"numberComments": FieldValue.increment(1)});
-    databaseReference.collection('users').doc(uid).update({"numberComments": FieldValue.increment(1)});
-    databaseReference.collection('users').doc(uid).update({"lastCommentTime": DateTime.now()});
+        'prompt': prompt.reference,
+      },
+    );
+    databaseReference
+        .collection('prompts')
+        .doc(id)
+        .update({"numberComments": FieldValue.increment(1)});
+    databaseReference
+        .collection('users')
+        .doc(uid)
+        .update({"numberComments": FieldValue.increment(1)});
+    databaseReference
+        .collection('users')
+        .doc(uid)
+        .update({"lastCommentTime": DateTime.now()});
   }
 
-  void upvoteComment(String promptID, String commentID) {
-    final databaseReference = FirebaseFirestore.instance;
-    databaseReference
-      .collection('prompts')
-      .doc(promptID)
-      .collection('comments')
-      .doc(commentID)
-      .update({"rating": FieldValue.increment(1)});
+  void upvoteComment(String promptID, String commentID) async {
+    // Increment comment rating value
+    final DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('prompts')
+        .doc(promptID)
+        .collection('comments')
+        .doc(commentID);
+    documentReference.update({"rating": FieldValue.increment(1)});
+    // Increment comment author's rating
+    DocumentSnapshot doc = await documentReference.get();
+    var usr = doc['username'];
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('anonymousName', isEqualTo: usr)
+        .get()
+        .then((value) {
+      var docRef = value.docs[0].reference;
+      docRef.update({"numberVotes": FieldValue.increment(1)});
+    });
   }
 
-  void downvoteComment(String promptID, String commentID) {
-    final databaseReference = FirebaseFirestore.instance;
-    databaseReference
-      .collection('prompts')
-      .doc(promptID)
-      .collection('comments')
-      .doc(commentID)
-      .update({"rating": FieldValue.increment(-1)});
+  void downvoteComment(String promptID, String commentID) async {
+    // Decrement comment rating value
+    final DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('prompts')
+        .doc(promptID)
+        .collection('comments')
+        .doc(commentID);
+    documentReference.update({"rating": FieldValue.increment(-1)});
+    // Decrement comment author's rating
+    DocumentSnapshot doc = await documentReference.get();
+    var usr = doc['username'];
+    FirebaseFirestore.instance
+        .collection('users')
+        .where('anonymousName', isEqualTo: usr)
+        .get()
+        .then((value) {
+      var docRef = value.docs[0].reference;
+      docRef.update({"numberVotes": FieldValue.increment(-1)});
+    });
   }
 
   Future<void> deleteComment(String pid) {
-    final comments = FirebaseFirestore.instance.collection('prompts').doc(pid).collection('comments');
+    final comments = FirebaseFirestore.instance
+        .collection('prompts')
+        .doc(pid)
+        .collection('comments');
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    FirebaseFirestore.instance.collection('users').doc(uid).update({"numberComments": FieldValue.increment(-1)});
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({"numberComments": FieldValue.increment(-1)});
 
     return comments
-      .doc(commentID)
-      .delete()
-      .then((value) => log("Comment Deleted"))
-      .catchError((error) => log("Failed to delete comment: $error"));
+        .doc(commentID)
+        .delete()
+        .then((value) => log("Comment Deleted"))
+        .catchError((error) => log("Failed to delete comment: $error"));
   }
-
 }
