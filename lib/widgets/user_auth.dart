@@ -77,14 +77,15 @@ class UserAuth extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
     final currentDay = DateTime.now().day;
     final lastDayFuture = FirebaseFirestore.instance.collection('users')
-    .doc(user!.uid)
+    .doc(user?.uid)
     .get()
-    .then((value) => value.data()!["lastLoginDay"]);
+    .then((value) => value.data()!["lastLoginDay"])
+    .onError((error, stackTrace) => -1);
 
     final lastDay = await(lastDayFuture) as int;
 
     if (currentDay != lastDay) {
-      Users.getUserCollection().doc(user.uid).update({
+      Users.getUserCollection().doc(user?.uid).update({
         "anonymousName" : Users.createAnonymousName(),
         "lastLoginDay" : currentDay
       });
@@ -100,8 +101,8 @@ class UserAuth extends StatelessWidget {
       "numberComments": 0,
       "numberVotes": 0,
       "anonymousName": Users.createAnonymousName(),
+      "lastLoginDay" : 1,
       "lastCommentTime" : DateTime.fromMillisecondsSinceEpoch(0),
-      "lastLoginDay" : 1
     });
   }
 }
