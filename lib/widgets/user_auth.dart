@@ -1,4 +1,5 @@
 import 'package:bridge/models/users.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -32,6 +33,8 @@ class UserAuth extends StatelessWidget {
             _createUserFirestore();
           }
         });
+
+        _randomizeNameDaily();
 
         return const HomeScreen();
       },
@@ -70,6 +73,25 @@ class UserAuth extends StatelessWidget {
     );
   }
 
+  _randomizeNameDaily() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final currentDay = DateTime.now().day;
+    final lastDayFuture = FirebaseFirestore.instance.collection('users')
+    .doc(user?.uid)
+    .get()
+    .then((value) => value.data()!["lastLoginDay"])
+    .onError((error, stackTrace) => -1);
+
+    final lastDay = await(lastDayFuture) as int;
+
+    if (currentDay != lastDay) {
+      Users.getUserCollection().doc(user?.uid).update({
+        "anonymousName" : Users.createAnonymousName(),
+        "lastLoginDay" : currentDay
+      });
+    }
+  }
+
   _createUserFirestore() {
     final user = FirebaseAuth.instance.currentUser;
     Users.getUserCollection().doc(user!.uid).set({
@@ -79,6 +101,7 @@ class UserAuth extends StatelessWidget {
       "numberComments": 0,
       "numberVotes": 0,
       "anonymousName": Users.createAnonymousName(),
+      "lastLoginDay" : 1,
       "lastCommentTime" : DateTime.fromMillisecondsSinceEpoch(0),
     });
   }

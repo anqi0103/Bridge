@@ -9,6 +9,7 @@ class Users {
   int numberVotes;
   String anonymousName;
   DateTime lastCommentTime;
+  int lastLoginDay;
 
   final DateTime initializedDateTime = DateTime.fromMillisecondsSinceEpoch(0);
 
@@ -19,6 +20,7 @@ class Users {
     this.numberComments = 0,
     this.numberVotes = 0,
     this.anonymousName = '',
+    this.lastLoginDay = 1,
     DateTime? lastCommentTime,
   }) : lastCommentTime =
             lastCommentTime ?? DateTime.fromMillisecondsSinceEpoch(0);
@@ -34,6 +36,7 @@ class Users {
         numberComments: snapshot['numberComments'],
         numberVotes: snapshot['numberVotes'],
         anonymousName: snapshot['anonymousName'],
+        lastLoginDay: snapshot['lastLoginDay'],
         lastCommentTime: DateTime.fromMillisecondsSinceEpoch(
             snapshot['lastCommentTime'].millisecondsSinceEpoch));
   }
