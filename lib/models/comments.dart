@@ -39,6 +39,7 @@ class Comments {
         'username': username,
         'rating': rating,
         'prompt': prompt.reference,
+        'raters':[]
       },
     );
     databaseReference
@@ -62,18 +63,28 @@ class Comments {
         .doc(promptID)
         .collection('comments')
         .doc(commentID);
-    documentReference.update({"rating": FieldValue.increment(1)});
-    // Increment comment author's rating
     DocumentSnapshot doc = await documentReference.get();
-    var usr = doc['username'];
-    FirebaseFirestore.instance
-        .collection('users')
-        .where('anonymousName', isEqualTo: usr)
-        .get()
-        .then((value) {
-      var docRef = value.docs[0].reference;
-      docRef.update({"numberVotes": FieldValue.increment(1)});
-    });
+    final uid = FirebaseAuth.instance.currentUser?.uid as String;
+    // only upvote if current user hasn't already
+    if (!doc['raters'].contains(uid)) {
+      documentReference.update({
+        "rating": FieldValue.increment(1),
+        "raters": FieldValue.arrayUnion([uid])
+      });
+      // Increment comment author's rating
+      var usr = doc['username'];
+      FirebaseFirestore.instance
+          .collection('users')
+          .where('anonymousName', isEqualTo: usr)
+          .get()
+          .then((value) {
+        var docRef = value.docs[0].reference;
+        docRef.update({"numberVotes": FieldValue.increment(1)});
+      });
+    } else {
+      return;
+    }
+
   }
 
   void downvoteComment(String promptID, String commentID) async {
@@ -83,18 +94,26 @@ class Comments {
         .doc(promptID)
         .collection('comments')
         .doc(commentID);
-    documentReference.update({"rating": FieldValue.increment(-1)});
-    // Decrement comment author's rating
     DocumentSnapshot doc = await documentReference.get();
-    var usr = doc['username'];
-    FirebaseFirestore.instance
-        .collection('users')
-        .where('anonymousName', isEqualTo: usr)
-        .get()
-        .then((value) {
-      var docRef = value.docs[0].reference;
-      docRef.update({"numberVotes": FieldValue.increment(-1)});
-    });
+    final uid = FirebaseAuth.instance.currentUser?.uid as String;
+    // only downvote if user hasn't already
+    if (!doc['raters'].contains(uid)) {
+      documentReference.update({
+        "rating": FieldValue.increment(-1),
+        "raters": FieldValue.arrayUnion([uid])
+      });
+      // Decrement comment author's rating
+      var usr = doc['username'];
+      FirebaseFirestore.instance
+          .collection('users')
+          .where('anonymousName', isEqualTo: usr)
+          .get()
+          .then((value) {
+        var docRef = value.docs[0].reference;
+        docRef.update({"numberVotes": FieldValue.increment(-1)});
+      });
+
+    }
   }
 
   Future<void> deleteComment(String pid) {
