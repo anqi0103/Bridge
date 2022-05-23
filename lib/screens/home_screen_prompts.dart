@@ -19,77 +19,12 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    generatePromptsIfNone();
-  }
-
-  void generatePromptsIfNone() async {
-    var now = DateTime.now();
-    var startOfDay = DateTime(now.year, now.month, now.day);
-
-    var resultTempPrompts = await FirebaseFirestore.instance
-        .collection('tempPrompts')
-        .where('timestamp', isEqualTo: startOfDay)
-        .get();
-
-    DocumentReference<Map<String, dynamic>> tempPromptRef;
-    if (resultTempPrompts.docs.isEmpty) {
-      tempPromptRef =
-          await FirebaseFirestore.instance.collection('tempPrompts').add({
-        'timestamp': startOfDay,
+    
+    generatePromptsIfNone(FirebaseFirestore.instance).then((promptData) {
+      setState(() {
+        isLoading = false;
+        promptList = promptData;
       });
-
-      var promptsResult =
-          await FirebaseFirestore.instance.collection('prompts').get();
-      var length = promptsResult.docs.length;
-      var random = Random();
-      var selectedDocs = [];
-      for (var i = 0; i < 5; i++) {
-        QueryDocumentSnapshot<Map<String, dynamic>> doc;
-        do {
-          doc = promptsResult.docs.elementAt(random.nextInt(length));
-        } while (selectedDocs.contains(doc.id));
-        /*
-        before adding to selectedDocs, clear old comments
-        // clearComments(doc.id);
-        */
-        selectedDocs.add(doc.id);
-        await tempPromptRef
-            .collection('prompts')
-            .add({'prompt': doc.reference});
-      }
-    } else {
-      tempPromptRef = resultTempPrompts.docs.elementAt(0).reference;
-    }
-
-    var prompts = await tempPromptRef.collection('prompts').get();
-    List<Prompts> promptData = [];
-    for (var prompt in prompts.docs) {
-      var d = await (prompt.data()['prompt'] as DocumentReference).get();
-      var p = Prompts.fromFirestore(d.data() as Map<String, dynamic>, d.id);
-      promptData.add(p);
-    }
-
-    setState(() {
-      isLoading = false;
-      promptList = promptData;
-    });
-  }
-
-  void clearComments(String promptID) async {
-    // I think this is right? Please inspect!
-    DocumentReference doc = FirebaseFirestore.instance.collection('prompts').doc(promptID);
-    // get the comment subcollection
-    final comments = await doc.collection('comments').get();
-    // delete each doc in the subcollection
-    comments.docs.forEach((element) {
-      element.reference.delete().then(
-        (value) => null, 
-        onError: (e) => print("Error updating document $e")
-      );
-    });
-    // reset number of Comments to 0.
-    doc.update({
-      "numberComments": 0,
     });
   }
 
@@ -163,4 +98,46 @@ class _HomeScreen extends State<HomeScreen> {
       );
     }
   }
+}
+
+Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
+  var now = DateTime.now();
+  var startOfDay = DateTime(now.year, now.month, now.day);
+
+  var resultTempPrompts = await client
+      .collection('tempPrompts')
+      .where('timestamp', isEqualTo: startOfDay)
+      .get();
+
+  DocumentReference<Map<String, dynamic>> tempPromptRef;
+  if (resultTempPrompts.docs.isEmpty) {
+    tempPromptRef = await client.collection('tempPrompts').add({
+      'timestamp': startOfDay,
+    });
+
+    var promptsResult = await client.collection('prompts').get();
+    var length = promptsResult.docs.length;
+    var random = Random();
+    var selectedDocs = [];
+    for (var i = 0; i < 5; i++) {
+      QueryDocumentSnapshot<Map<String, dynamic>> doc;
+      do {
+        doc = promptsResult.docs.elementAt(random.nextInt(length));
+      } while (selectedDocs.contains(doc.id));
+      selectedDocs.add(doc.id);
+      await tempPromptRef.collection('prompts').add({'prompt': doc.reference});
+    }
+  } else {
+    tempPromptRef = resultTempPrompts.docs.elementAt(0).reference;
+  }
+
+  var prompts = await tempPromptRef.collection('prompts').get();
+  List<Prompts> promptData = [];
+  for (var prompt in prompts.docs) {
+    var d = await (prompt.data()['prompt'] as DocumentReference).get();
+    var p = Prompts.fromFirestore(d.data() as Map<String, dynamic>, d.id);
+    promptData.add(p);
+  }
+
+  return promptData;
 }

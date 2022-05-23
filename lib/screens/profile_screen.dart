@@ -46,18 +46,6 @@ class _ProfileScreen extends State<ProfileScreen> {
       await _firebaseAuth.signOut();
     }
 
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     leading: const BackButton(),
-    //     title: const Text('Bridge'),
-    //   ),
-    //   body: SafeArea(
-    //     child: UserComments(
-    //       username: currentUser?.data()?.anonymousName,
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
@@ -82,29 +70,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                         } else if (!snapshot.hasData) {
                           return const CircularProgressIndicator();
                         } else {
-                          Map<String, dynamic> data =
-                              snapshot.data!.data() as Map<String, dynamic>;
-                          return Column(
-                            children: [
-                              Text("Today's Snapshot",
-                                  style: Theme.of(context).textTheme.headline4),
-                              const Padding(padding: EdgeInsets.only(top: 30)),
-                              Text(
-                                  "Randomized username: ${data['anonymousName']}"),
-                              Text("Your attribute: ${data['attribute']}"),
-                              Text("Comment count: ${data['numberComments']}"),
-                              Text("Vote count: ${data['numberVotes']}"),
-                              InkWell(
-                                onTap: () {
-                                  _showMaterialDialog();
-                                },
-                                child: const Text(
-                                  "Edit Attribute",
-                                  style: TextStyle(color: Colors.blue),
-                                ),
-                              ),
-                            ],
-                          );
+                          return displayUserProfile(snapshot, context);
                         }
                       },
                     ),
@@ -128,6 +94,30 @@ class _ProfileScreen extends State<ProfileScreen> {
               .push(MaterialPageRoute(builder: (context) => const UserAuth()));
         },
       ),
+    );
+  }
+
+  Column displayUserProfile(
+      AsyncSnapshot<DocumentSnapshot<Object?>> snapshot, BuildContext context) {
+    Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+    return Column(
+      children: [
+        Text("Today's Snapshot", style: Theme.of(context).textTheme.headline4),
+        const Padding(padding: EdgeInsets.only(top: 30)),
+        Text("Randomized username: ${data['anonymousName']}"),
+        Text("Your attribute: ${data['attribute']}"),
+        Text("Comment count: ${data['numberComments']}"),
+        Text("Vote count: ${data['numberVotes']}"),
+        InkWell(
+          onTap: () {
+            _showMaterialDialog();
+          },
+          child: const Text(
+            "Edit Attribute",
+            style: TextStyle(color: Colors.blue),
+          ),
+        ),
+      ],
     );
   }
 
