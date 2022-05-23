@@ -124,6 +124,10 @@ Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
       do {
         doc = promptsResult.docs.elementAt(random.nextInt(length));
       } while (selectedDocs.contains(doc.id));
+      
+      // before adding to selectedDocs, clear old comments
+      clearComments(doc.id);
+    
       selectedDocs.add(doc.id);
       await tempPromptRef.collection('prompts').add({'prompt': doc.reference});
     }
@@ -141,3 +145,21 @@ Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
 
   return promptData;
 }
+
+void clearComments(String promptID) async {
+    // I think this should work but please inspect.
+    DocumentReference doc = FirebaseFirestore.instance.collection('prompts').doc(promptID);
+    // get the comment subcollection
+    final comments = await doc.collection('comments').get();
+    // delete each doc in the subcollection
+    comments.docs.forEach((element) {
+      element.reference.delete().then(
+        (value) => null, 
+        onError: (e) => print("Error updating document $e")
+      );
+    });
+    // reset number of Comments to 0.
+    doc.update({
+      "numberComments": 0,
+    });
+  }
