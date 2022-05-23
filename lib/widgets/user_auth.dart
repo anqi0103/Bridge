@@ -17,9 +17,7 @@ class UserAuth extends StatelessWidget {
         if (!snapshot.hasData) {
           return SignInScreen(
               sideBuilder: (context, constraints) => drawBridge(),
-              headerBuilder: (context, constraints, reqdouble) {
-                return drawBridge();
-              },
+              headerBuilder: (context, constraints, reqdouble) => drawBridge(),
               providerConfigs: const [
                 EmailProviderConfiguration(),
               ]);
@@ -30,11 +28,11 @@ class UserAuth extends StatelessWidget {
         var userRef = Users.getUserCollection().doc(user!.uid);
         userRef.get().then((foundUser) {
           if (foundUser.data() == null) {
-            _createUserFirestore();
+            _createUserFirestore(user);
           }
         });
 
-        _randomizeNameDaily();
+        _randomizeNameDaily(user);
 
         return const HomeScreen();
       },
@@ -42,30 +40,29 @@ class UserAuth extends StatelessWidget {
   }
 
   SingleChildScrollView drawBridge() {
+    var drawBridgeIcon = const FaIcon(FontAwesomeIcons.bridgeWater,
+        color: Colors.blue, size: 75);
+
+    const bridgeText = Center(
+      child: Text('bridge',
+          style: TextStyle(
+            fontSize: 50,
+            color: Colors.blue,
+          )),
+    );
     return SingleChildScrollView(
       child: Column(
         children: [
-          const Center(
-            child: Text('bridge',
-                style: TextStyle(
-                  fontSize: 50,
-                  color: Colors.blue,
-                )),
-          ),
+          bridgeText,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
-                child: FaIcon(FontAwesomeIcons.bridgeWater,
-                    color: Colors.blue, size: 75),
-              ),
-              FaIcon(
-                FontAwesomeIcons.bridgeWater,
-                color: Colors.blue,
-                size: 75,
-              ),
-              FaIcon(FontAwesomeIcons.bridgeWater,
-                  color: Colors.blue, size: 75),
+                  child: Row(children: [
+                drawBridgeIcon,
+                drawBridgeIcon,
+                drawBridgeIcon,
+              ]))
             ],
           ),
         ],
@@ -73,36 +70,35 @@ class UserAuth extends StatelessWidget {
     );
   }
 
-  _randomizeNameDaily() async {
-    final user = FirebaseAuth.instance.currentUser;
+  _randomizeNameDaily(User user) async {
     final currentDay = DateTime.now().day;
-    final lastDayFuture = FirebaseFirestore.instance.collection('users')
-    .doc(user?.uid)
-    .get()
-    .then((value) => value.data()!["lastLoginDay"])
-    .onError((error, stackTrace) => -1);
+    final lastDayFuture = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get()
+        .then((value) => value.data()!["lastLoginDay"])
+        .onError((error, stackTrace) => -1);
 
-    final lastDay = await(lastDayFuture) as int;
+    final lastDay = await (lastDayFuture) as int;
 
     if (currentDay != lastDay) {
-      Users.getUserCollection().doc(user?.uid).update({
-        "anonymousName" : Users.createAnonymousName(),
-        "lastLoginDay" : currentDay
+      Users.getUserCollection().doc(user.uid).update({
+        "anonymousName": Users.createAnonymousName(),
+        "lastLoginDay": currentDay
       });
     }
   }
 
-  _createUserFirestore() {
-    final user = FirebaseAuth.instance.currentUser;
-    Users.getUserCollection().doc(user!.uid).set({
+  _createUserFirestore(User user) {
+    Users.getUserCollection().doc(user.uid).set({
       "email": user.email,
       "attribute": "",
       "rating": 0,
       "numberComments": 0,
       "numberVotes": 0,
       "anonymousName": Users.createAnonymousName(),
-      "lastLoginDay" : 1,
-      "lastCommentTime" : DateTime.fromMillisecondsSinceEpoch(0),
+      "lastLoginDay": 1,
+      "lastCommentTime": DateTime.fromMillisecondsSinceEpoch(0),
     });
   }
 }
