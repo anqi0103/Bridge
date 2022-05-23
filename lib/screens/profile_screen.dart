@@ -46,18 +46,6 @@ class _ProfileScreen extends State<ProfileScreen> {
       await _firebaseAuth.signOut();
     }
 
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     leading: const BackButton(),
-    //     title: const Text('Bridge'),
-    //   ),
-    //   body: SafeArea(
-    //     child: UserComments(
-    //       username: currentUser?.data()?.anonymousName,
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
