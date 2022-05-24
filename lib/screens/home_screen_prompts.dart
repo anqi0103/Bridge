@@ -31,7 +31,7 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Text("Loading...");
+      return const Center(child: CircularProgressIndicator());
     } else {
       return Scaffold(
         appBar: AppBar(
