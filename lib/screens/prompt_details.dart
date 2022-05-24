@@ -106,15 +106,15 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
 
   void _showMaterialDialog() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return FractionallySizedBox(
-            heightFactor: .8,
-            child: AlertDialog(
-              title: const Text('New Comment'),
-              content: NewCommentForm(id: id), 
-            ),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: .8,
+          child: AlertDialog(
+            title: const Text('New Comment'),
+            content: NewCommentForm(id: id), 
+          ),
+        );
+      });
   }
 }
