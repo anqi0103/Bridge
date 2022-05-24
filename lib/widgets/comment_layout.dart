@@ -69,20 +69,7 @@ class _CommentLayoutState extends State<CommentLayout> {
                   onTap: () => widget.comment.downvoteComment(widget.promptID, widget.comment.commentID)
                 ),
                 Expanded(
-                  child: FutureBuilder(future: getUser(), builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (widget.comment.username == snapshot.data) {
-                        return Align(
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            child: const Icon(Icons.delete_outline, color: Colors.red,),
-                            onTap: () => widget.comment.deleteComment(widget.promptID)
-                          ),
-                        );
-                      }
-                    } 
-                    return const SizedBox(height: 0, width: 0,); 
-                  }),
+                  child: myFutureBuilder(),
                 ),
               ],
             ),
@@ -90,6 +77,23 @@ class _CommentLayoutState extends State<CommentLayout> {
         ),
       ),
     );
+  }
+
+  Widget myFutureBuilder() {
+    return FutureBuilder(future: getUser(), builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        if (widget.comment.username == snapshot.data) {
+          return Align(
+            alignment: Alignment.centerRight,
+            child: InkWell(
+              child: const Icon(Icons.delete_outline, color: Colors.red,),
+              onTap: () => widget.comment.deleteComment(widget.promptID)
+            ),
+          );
+        }
+      } 
+      return const SizedBox(height: 0, width: 0,); 
+    });
   }
 
   Future<String> getUser() async {
