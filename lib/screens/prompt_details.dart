@@ -72,11 +72,11 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         return Column(
           children: [
             Container(
-              color: Colors.blue[800],
+              color: Colors.blue[600],
               height: 150,
               child: Center(child: 
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
                   child: Text(
                     widget.prompt.prompt, 
                     overflow: TextOverflow.fade,
