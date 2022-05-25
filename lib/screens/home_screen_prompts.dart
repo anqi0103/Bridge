@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:bridge/screens/profile_screen.dart' as bridge_profile_screen;
 import 'package:bridge/models/prompts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './prompt_details.dart';
 
@@ -124,6 +125,10 @@ Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
       do {
         doc = promptsResult.docs.elementAt(random.nextInt(length));
       } while (selectedDocs.contains(doc.id));
+      
+      // before adding to selectedDocs, clear old comments
+      clearComments(doc.id);
+    
       selectedDocs.add(doc.id);
       await tempPromptRef.collection('prompts').add({'prompt': doc.reference});
     }
@@ -141,3 +146,25 @@ Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
 
   return promptData;
 }
+
+void clearComments(String promptID) async {
+    DocumentReference doc = FirebaseFirestore.instance.collection('prompts').doc(promptID);
+    // get the comment subcollection
+    final comments = await doc.collection('comments').get();
+    // delete each doc in the subcollection
+    comments.docs.forEach((element) {
+      element.reference.delete().then(
+        (value) => null, 
+        onError: (e) => print("Error updating document $e")
+      );
+    });
+    // reset Prompt's numberComments field to 0
+    doc.update({
+      "numberComments": 0,
+    });
+    // reset User's numberComments field to 0
+    FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .update({"numberComments": 0}); 
+  }
