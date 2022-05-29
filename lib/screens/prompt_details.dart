@@ -22,8 +22,12 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 75.0,
         leading: const BackButton(),
-        title: const Text('Bridge'),
+        title: const Text(
+          'Bridge',
+          style: TextStyle(fontFamily: 'AlfaSlabOne'),
+        ),
         actions: [Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
@@ -40,7 +44,10 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         onPressed: () {
           _showMaterialDialog();
         },
-        label: const Text('Add Comment'),
+        label: const Text(
+          'Add Comment',
+          style: TextStyle(fontFamily: 'AlfaSlabOne')
+        ),
         icon: const Icon(Icons.comment),
       ),
     );
@@ -72,7 +79,7 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         return Column(
           children: [
             Container(
-              color: Colors.blue[600],
+              color: Colors.indigo[100],
               height: 150,
               child: Center(child: 
                 Padding(
@@ -81,7 +88,9 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
                     widget.prompt.prompt, 
                     overflow: TextOverflow.fade,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline6!.copyWith(color: Colors.white)
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                      color: Colors.indigo[800],
+                      fontWeight: FontWeight.w600)
                   )
                 )
               ),
@@ -111,7 +120,14 @@ class _PromptDetailScreenState extends State<PromptDetailScreen> {
         return FractionallySizedBox(
           heightFactor: .8,
           child: AlertDialog(
-            title: const Text('New Comment'),
+            title: Center(
+              child: Text(
+                'New Comment',
+                style: TextStyle(
+                  fontFamily: 'AlfaSlabOne',
+                  color: Colors.deepOrange[800])
+              ),
+            ),
             content: NewCommentForm(id: id), 
           ),
         );

@@ -53,10 +53,15 @@ class UserComments extends StatelessWidget {
                         padding: const EdgeInsets.all(10),
                         alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
+                          color: Colors.indigo[100],
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        child: Text(comment.comment ?? "Null"),
+                        child: Text(
+                          comment.comment ?? "Null",
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Colors.indigo[800] 
+                          )
+                        ),
                       ),
                     ],
                   ),

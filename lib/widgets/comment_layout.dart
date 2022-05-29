@@ -61,11 +61,11 @@ class _CommentLayoutState extends State<CommentLayout> {
             Row(
               children: [
                 InkWell(
-                  child: Icon(Icons.arrow_circle_up, color: Colors.blue[800],),
+                  child: Icon(Icons.arrow_circle_up, color: Colors.indigo[700],),
                   onTap: () => widget.comment.upvoteComment(widget.promptID, widget.comment.commentID),
                 ),
                 InkWell(
-                  child: Icon(Icons.arrow_circle_down, color: Colors.amber[800],),
+                  child: const Icon(Icons.arrow_circle_down, color: Colors.deepOrange,),
                   onTap: () => widget.comment.downvoteComment(widget.promptID, widget.comment.commentID)
                 ),
                 Expanded(
