@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -24,14 +23,20 @@ class Comments {
         commentID: '');
   }
 
+  String getUserID() => FirebaseAuth.instance.currentUser?.uid as String;
+
+  DocumentReference getDocRef(String collection, String docID) => 
+    FirebaseFirestore.instance.collection(collection).doc(docID);
+
+  CollectionReference getSubcollectionRef(String collection1, String docID, String collection2) => 
+    FirebaseFirestore.instance.collection(collection1).doc(docID).collection(collection2);
+
   Future<void> addComment(String id) async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    final databaseReference = FirebaseFirestore.instance;
-    final prompt = await databaseReference.collection('prompts').doc(id).get();
-    databaseReference
-        .collection('prompts')
-        .doc(id)
-        .collection('comments')
+    final uid = getUserID();
+    // final databaseReference = FirebaseFirestore.instance;
+    final prompt = await FirebaseFirestore.instance.collection('prompts').doc(id).get();
+    final subcollectionRef = getSubcollectionRef('prompts', id, 'comments');
+    subcollectionRef
         .doc()
         .set(
       {
@@ -42,32 +47,23 @@ class Comments {
         'raters':[]
       },
     );
-    databaseReference
-        .collection('prompts')
-        .doc(id)
+    getDocRef('prompts', id)
         .update({"numberComments": FieldValue.increment(1)});
-    databaseReference
-        .collection('users')
-        .doc(uid)
-        .update({"numberComments": FieldValue.increment(1)});
-    databaseReference
-        .collection('users')
-        .doc(uid)
-        .update({"lastCommentTime": DateTime.now()});
+    getDocRef('users', uid)
+        .update({
+          "numberComments": FieldValue.increment(1),
+          "lastCommentTime": DateTime.now()});
   }
 
   void upvoteComment(String promptID, String commentID) async {
     // Increment comment rating value
-    final DocumentReference documentReference = FirebaseFirestore.instance
-        .collection('prompts')
-        .doc(promptID)
-        .collection('comments')
+    DocumentReference docRef = getSubcollectionRef('prompts', promptID, 'comments')
         .doc(commentID);
-    DocumentSnapshot doc = await documentReference.get();
-    final uid = FirebaseAuth.instance.currentUser?.uid as String;
+    DocumentSnapshot doc = await docRef.get();
+    final uid = getUserID();
     // only upvote if current user hasn't already
     if (!doc['raters'].contains(uid)) {
-      documentReference.update({
+      docRef.update({
         "rating": FieldValue.increment(1),
         "raters": FieldValue.arrayUnion([uid])
       });
@@ -89,16 +85,13 @@ class Comments {
 
   void downvoteComment(String promptID, String commentID) async {
     // Decrement comment rating value
-    final DocumentReference documentReference = FirebaseFirestore.instance
-        .collection('prompts')
-        .doc(promptID)
-        .collection('comments')
+    DocumentReference docRef = getSubcollectionRef('prompts', promptID, 'comments')
         .doc(commentID);
-    DocumentSnapshot doc = await documentReference.get();
-    final uid = FirebaseAuth.instance.currentUser?.uid as String;
+    DocumentSnapshot doc = await docRef.get();
+    final uid = getUserID();
     // only downvote if user hasn't already
     if (!doc['raters'].contains(uid)) {
-      documentReference.update({
+      docRef.update({
         "rating": FieldValue.increment(-1),
         "raters": FieldValue.arrayUnion([uid])
       });
@@ -117,15 +110,10 @@ class Comments {
   }
 
   Future<void> deleteComment(String pid) {
-    final comments = FirebaseFirestore.instance
-        .collection('prompts')
-        .doc(pid)
-        .collection('comments');
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update({"numberComments": FieldValue.increment(-1)});
+    final comments = getSubcollectionRef('prompts', pid, 'comments');
+    final uid = getUserID();
+    getDocRef('users', uid)
+      .update({"numberComments": FieldValue.increment(-1)});
 
     return comments
         .doc(commentID)

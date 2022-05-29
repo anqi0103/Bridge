@@ -48,8 +48,12 @@ class _ProfileScreen extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 75.0,
         leading: const BackButton(),
-        title: const Text('Bridge'),
+        title: const Text(
+          'Bridge',
+          style: TextStyle(fontFamily: 'AlfaSlabOne')
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -78,7 +82,14 @@ class _ProfileScreen extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              const Text("Today's comments"),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  "Today's comments",
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    fontFamily: 'AlfaSlabOne',
+                    color: Colors.deepOrange)),
+              ),
               UserComments(
                 username: currentUser?.data()?.anonymousName,
               ),
@@ -102,12 +113,18 @@ class _ProfileScreen extends State<ProfileScreen> {
     Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
     return Column(
       children: [
-        Text("Today's Snapshot", style: Theme.of(context).textTheme.headline4),
+        Text(
+          "Today's Snapshot", 
+          style: Theme.of(context).textTheme.headline4!.copyWith(
+            fontFamily: 'AlfaSlabOne',
+            color: Colors.indigo)
+        ),
         const Padding(padding: EdgeInsets.only(top: 30)),
         Text("Randomized username: ${data['anonymousName']}"),
         Text("Your attribute: ${data['attribute']}"),
         Text("Comment count: ${data['numberComments']}"),
         Text("Vote count: ${data['numberVotes']}"),
+        const Padding(padding: EdgeInsets.only(top: 10)),
         InkWell(
           onTap: () {
             _showMaterialDialog();

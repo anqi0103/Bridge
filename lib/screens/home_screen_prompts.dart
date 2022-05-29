@@ -32,11 +32,16 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Text("Loading...");
+      return const Center(child: CircularProgressIndicator());
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Today's Prompts"),
+          toolbarHeight: 75.0,
+          title: const Text(
+            "Today's Prompts",
+            style: TextStyle(
+              fontFamily: 'AlfaSlabOne')
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -67,17 +72,31 @@ class _HomeScreen extends State<HomeScreen> {
                           padding: const EdgeInsets.all(10),
                           alignment: Alignment.topLeft,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                            color: Colors.indigo[100],
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Text(prompt.prompt),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              prompt.prompt,
+                              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                                color: Colors.indigo[800], 
+                                fontWeight: FontWeight.w600
+                              )
+                            ),
+                          ),
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
                             margin: const EdgeInsets.only(top: 5.0),
                             child: Text(
-                                prompt.numberComments.toString() + ' replies'),
+                                prompt.numberComments.toString() + ' replies',
+                                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                                color: Colors.deepOrange,
+                                fontStyle: FontStyle.italic 
+                              ),
+                            ),
                           ),
                         ),
                       ],

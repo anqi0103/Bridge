@@ -11,7 +11,10 @@ class App extends StatelessWidget {
     return MaterialApp(
         title: 'Bridge',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          colorSchemeSeed: Colors.indigo,
+          brightness: Brightness.light,
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Colors.deepOrange)
         ),
         home: const Scaffold(
           body: UserAuth(),
