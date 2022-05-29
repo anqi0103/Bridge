@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:bridge/screens/profile_screen.dart' as bridge_profile_screen;
 import 'package:bridge/models/prompts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './prompt_details.dart';
 
@@ -147,7 +148,6 @@ Future<List<Prompts>> generatePromptsIfNone(FirebaseFirestore client) async {
 }
 
 void clearComments(String promptID) async {
-    // I think this should work but please inspect.
     DocumentReference doc = FirebaseFirestore.instance.collection('prompts').doc(promptID);
     // get the comment subcollection
     final comments = await doc.collection('comments').get();
@@ -158,8 +158,13 @@ void clearComments(String promptID) async {
         onError: (e) => print("Error updating document $e")
       );
     });
-    // reset number of Comments to 0.
+    // reset Prompt's numberComments field to 0
     doc.update({
       "numberComments": 0,
     });
+    // reset User's numberComments field to 0
+    FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .update({"numberComments": 0}); 
   }
